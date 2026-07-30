@@ -1,0 +1,63 @@
+{
+    "language": "en",
+    "shortform": "SIP3K",
+    "longform": "Sistem Persuratan dan Penjadwalan Piket Kejaksaan",
+    "copyright": "Hak Cipta © 2026 SIP3K. Semua Hak Dilindungi Undang-Undang.",
+    "description": "Sistem Persuratan dan Penjadwalan Piket Kejaksaan (SIP3K) Negeri Banda Aceh",
+    "paths": [
+        {
+            "name": "Daftar Templat",
+            "icon": "FileText",
+            "route": "/dashboard/templates",
+            "description": "Daftar template Excel yang tersedia"
+        },
+        {
+            "name": "Dokumen Saya",
+            "icon": "FileStack",
+            "route": "/dashboard/docs",
+            "description": "Daftar dokumen saya yang tersedia"
+        },
+        {
+            "name": "Jadwal Piket",
+            "icon": "ClipboardClock",
+            "route": "/dashboard/picket",
+            "description": "Pengaturan dan penjadwalan jadwal piket otomatis"
+        }
+    ],
+    "dropdown": {
+        "templates": [
+            {
+                "name": "Gunakan",
+                "icon": "SquarePen",
+                "color": "black"
+            },
+            {
+                "name": "Pratinjau",
+                "icon": "ZoomIn",
+                "color": "black"
+            },
+            {
+                "name": "Hapus",
+                "icon": "Trash",
+                "color": "var(--color-red-500)"
+            }
+        ],
+        "docs": [
+            {
+                "name": "Simpan",
+                "icon": "Save",
+                "color": "black"
+            },
+            {
+                "name": "Edit",
+                "icon": "SquarePen",
+                "color": "black"
+            },
+            {
+                "name": "Hapus",
+                "icon": "Trash",
+                "color": "var(--color-red-500)"
+            }
+        ]
+    }
+}
