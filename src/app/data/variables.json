@@ -24,6 +24,13 @@
             "description": "Pengaturan dan penjadwalan jadwal piket otomatis"
         }
     ],
+    "picket": {
+        "tableHeaders": ["No.", "Nama", "NIP", "NRP", "No. HP", "Jadwal Piket"],
+        "todaySectionTitle": "Piket Hari Ini",
+        "todaySectionDescription": "Daftar nama yang melaksanakan piket hari ini.",
+        "listSectionTitle": "Daftar Pegawai",
+        "listSectionDescription": "Daftar nama beserta informasi terkait pegawai semua golongan."
+    },
     "dropdown": {
         "templates": [
             {
