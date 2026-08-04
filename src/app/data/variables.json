@@ -4,60 +4,26 @@
     "longform": "Sistem Persuratan dan Penjadwalan Piket Kejaksaan",
     "copyright": "Hak Cipta © 2026 SIP3K. Semua Hak Dilindungi Undang-Undang.",
     "description": "Sistem Persuratan dan Penjadwalan Piket Kejaksaan (SIP3K) Negeri Banda Aceh",
+    "divisions": [
+        "Intel",
+        "Pembinaan",
+        "Pidum",
+        "Pidsus",
+        "PAPBB",
+        "Datun"
+    ],
     "paths": [
         {
-            "name": "Daftar Templat",
+            "name": "Dokumen SPTJB",
             "icon": "FileText",
-            "route": "/dashboard/templates",
-            "description": "Daftar template Excel yang tersedia"
-        },
-        {
-            "name": "Dokumen Saya",
-            "icon": "FileStack",
-            "route": "/dashboard/docs",
-            "description": "Daftar dokumen saya yang tersedia"
+            "route": "/dashboard/sptjb",
+            "description": "Buat dan kelola dokumen Surat Pernyataan Tanggung Jawab Belanja (SPTJB) dengan mudah dan cepat."
         },
         {
             "name": "Jadwal Piket",
             "icon": "ClipboardClock",
             "route": "/dashboard/picket",
-            "description": "Pengaturan dan penjadwalan jadwal piket otomatis"
+            "description": "Atur jadwal piket dan kirim pemberitahuan piket ke nomor WhatsApp yang bersangkutan secara otomatis"
         }
-    ],
-    "dropdown": {
-        "templates": [
-            {
-                "name": "Gunakan",
-                "icon": "SquarePen",
-                "color": "black"
-            },
-            {
-                "name": "Pratinjau",
-                "icon": "ZoomIn",
-                "color": "black"
-            },
-            {
-                "name": "Hapus",
-                "icon": "Trash",
-                "color": "var(--color-red-500)"
-            }
-        ],
-        "docs": [
-            {
-                "name": "Simpan",
-                "icon": "Save",
-                "color": "black"
-            },
-            {
-                "name": "Edit",
-                "icon": "SquarePen",
-                "color": "black"
-            },
-            {
-                "name": "Hapus",
-                "icon": "Trash",
-                "color": "var(--color-red-500)"
-            }
-        ]
-    }
+    ]
 }
