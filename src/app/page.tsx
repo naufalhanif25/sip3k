@@ -1,65 +1,113 @@
-import Image from "next/image";
+"use client"
+
+import { useState } from "react"
+import { cn } from "./lib/cn"
+import { useRouter } from "next/navigation"
+import CheckBox from "./components/checkbox"
+import { UserLogin, UserLoginProps } from "./props/user"
+import Input from "./components/input"
+import Button from "./components/button"
+import { LogIn } from "lucide-react"
+import variables from "./data/variables.json"
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    const router = useRouter()
+    const [userLogin, setUserLogin] = useState<UserLoginProps>(
+        UserLogin.parse({
+            username: "",
+            password: "",
+            isRemember: false,
+        })
+    )
+
+    const handleSubmit = () => {
+        // TODO: Login logic
+        router.push("/dashboard")
+    }
+
+    return (
+        <div
+            className={cn(
+                "w-dvw h-dvh gap-5 p-8",
+                "flex flex-col items-center justify-center",
+                "overflow-x-auto"
+            )}
+        >
+            <div
+                className={cn(
+                    "w-full h-fit rounded-2xl min-w-48 max-w-86",
+                    "bg-indigo-100 border-2 border-indigo-200",
+                    "flex flex-col items-center justify-start",
+                    "gap-6 py-8 px-6 overflow-y-auto scrollbar-none"
+                )}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+                <span className={cn("flex flex-col items-center justify-center gap-2")}>
+                    <LogIn strokeWidth={2} className="size-10 text-indigo-500 shrink-0" />
+                    <span
+                        className={cn(
+                            "flex flex-col items-center justify-center",
+                            "gap-1 w-fit h-fit shrink-0"
+                        )}
+                    >
+                        <h1 className="text-2xl font-semibold">{variables.shortform}</h1>
+                        <h3 className="text-sm text-center font-medium">{variables.longform}</h3>
+                    </span>
+                </span>
+                <span className={cn("w-full flex-1 gap-3", "flex flex-col")}>
+                    <Input
+                        title="Nama Pengguna"
+                        onChange={(e) =>
+                            setUserLogin((prev) => ({
+                                ...prev,
+                                username: e.target.value,
+                            }))
+                        }
+                        value={userLogin.username}
+                        type="text"
+                        placeholder="Nama pengguna"
+                        className="w-full h-10 text-sm shrink-0"
+                    />
+                    <span className="flex w-full h-fit gap-1">
+                        <Input
+                            title="Kata Sandi"
+                            onChange={(e) => {
+                                setUserLogin((prev) => ({
+                                    ...prev,
+                                    password: e.target.value,
+                                }))
+                            }}
+                            value={userLogin.password}
+                            type="password"
+                            placeholder="Kata sandi"
+                            className="w-full h-10 text-sm shrink-0"
+                        />
+                    </span>
+                    <CheckBox
+                        title="Ingat saya"
+                        className="w-fit h-fit gap-2"
+                        active={userLogin.isRemember}
+                        onClick={() =>
+                            setUserLogin((prev) => ({
+                                ...prev,
+                                isRemember: !prev.isRemember,
+                            }))
+                        }
+                    />
+                </span>
+                <Button
+                    onClick={handleSubmit}
+                    className={cn(
+                        "px-3 py-1 max-w-32 w-full h-10",
+                        "disabled:opacity-50 disabled:cursor-not-allowed"
+                    )}
+                >
+                    Masuk
+                    <LogIn strokeWidth={2} className="size-4 text-white" />
+                </Button>
+            </div>
+            <p className="text-xs text-center max-w-86 text-wrap text-black/50">
+                {variables.copyright}
+            </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+    )
 }
