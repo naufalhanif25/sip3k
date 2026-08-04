@@ -3,7 +3,7 @@
 import { cn } from "@/app/lib/cn"
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
-import { HomeInputProps } from "../props/component"
+import { InputProps } from "../props/component"
 
 export default function Input({
     title,
@@ -12,7 +12,7 @@ export default function Input({
     type,
     className,
     ...props
-}: HomeInputProps) {
+}: InputProps) {
     const [showPassword, setShowPassword] = useState<boolean>(false)
     const [isFocus, setIsFocus] = useState<boolean>(false)
 
@@ -28,11 +28,31 @@ export default function Input({
                     "overflow-hidden"
                 )}
             >
+                {type === "currency" && (
+                    <span
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className={cn(
+                            "h-full aspect-square cursor-pointer shrink-0",
+                            "flex items-center justify-center overflow-hidden"
+                        )}
+                    >
+                        <h6 className="text-sm">Rp</h6>
+                    </span>
+                )}
                 <input
                     onChange={onChange}
                     onFocus={() => setIsFocus(true)}
                     onBlur={() => setIsFocus(false)}
-                    type={type === "password" && !showPassword ? type : "text"}
+                    type={
+                        type === "password"
+                            ? !showPassword
+                                ? type
+                                : "text"
+                            : type === "currency"
+                              ? "text"
+                              : type
+                    }
+                    pattern={type === "currency" ? "[0-9]*" : "*"}
                     className="h-full flex-1 outline-none"
                     placeholder={placeholder}
                     {...props}

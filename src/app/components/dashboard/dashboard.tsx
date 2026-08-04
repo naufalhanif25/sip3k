@@ -161,6 +161,7 @@ export default function Dashboard({ children, className, ...props }: DashboardPr
                             )}
                         </div>
                         <div
+                            onClick={() => setOpenSidebar(false)}
                             className={cn(
                                 openSidebar
                                     ? "opacity-50 pointer-events-auto"
