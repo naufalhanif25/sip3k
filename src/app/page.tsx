@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { cn } from "./lib/cn"
 import { useRouter } from "next/navigation"
 import CheckBox from "./components/checkbox"
@@ -8,10 +8,21 @@ import { UserLogin, UserLoginProps } from "./props/user"
 import Input from "./components/input"
 import Button from "./components/button"
 import { LogIn } from "lucide-react"
+import Notification from "./components/notification"
+import { PopupState, PopupStateProps } from "./props/component"
+import { BasicAPIResponseProps, BasicAPIResponse } from "./props/api"
 import variables from "./data/variables.json"
 
 export default function Home() {
     const router = useRouter()
+    const [popupState, setPopupState] = useState<PopupStateProps>(
+        PopupState.parse({
+            show: false,
+            title: "",
+            description: "",
+            type: "notification",
+        })
+    )
     const [userLogin, setUserLogin] = useState<UserLoginProps>(
         UserLogin.parse({
             username: "",
@@ -19,20 +30,93 @@ export default function Home() {
             isRemember: false,
         })
     )
+    const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false)
+    const handleSubmit = async () => {
+        if (!userLogin.username || !userLogin.password) {
+            if (popupState.show) handleSetNotificationState()
+            setTimeout(() => {
+                setPopupState(
+                    PopupState.parse({
+                        show: true,
+                        title: "Gagal Masuk",
+                        description: "Nama pengguna atau kata sandi tidak boleh kosong.",
+                        type: "error",
+                    })
+                )
+            }, 1)
+            return
+        }
+        setIsLoggingIn(true)
 
-    const handleSubmit = () => {
-        // TODO: Login logic
-        router.push("/dashboard")
+        try {
+            const res = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(userLogin),
+            })
+            const data = BasicAPIResponse.parse(await res.json())
+
+            if (!res.ok || !data.success) {
+                throw new Error(data.message || "Pastikan nama pengguna dan kata sandi benar.")
+            }
+            router.push("/dashboard")
+        } catch (err) {
+            if (popupState.show) handleSetNotificationState()
+            setTimeout(() => {
+                setPopupState(
+                    PopupState.parse({
+                        show: true,
+                        title: "Gagal Masuk",
+                        description:
+                            (err as BasicAPIResponseProps).message || "Terjadi kesalahan koneksi.",
+                        type: "error",
+                    })
+                )
+            }, 1)
+        } finally {
+            setIsLoggingIn(false)
+        }
     }
+    const handleSetNotificationState = () =>
+        setPopupState((prev) => ({
+            ...prev,
+            show: !prev.show,
+        }))
+    const handleUsernameChange = (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) =>
+        setUserLogin((prev) => ({
+            ...prev,
+            username: e.target.value,
+        }))
+    const handlePasswordChange = (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) =>
+        setUserLogin((prev) => ({
+            ...prev,
+            password: e.target.value,
+        }))
+    const handleIsRememberChange = () =>
+        setUserLogin((prev) => ({
+            ...prev,
+            isRemember: !prev.isRemember,
+        }))
 
     return (
         <div
             className={cn(
                 "w-dvw h-dvh gap-5 p-8",
                 "flex flex-col items-center justify-center",
-                "overflow-x-auto"
+                "overflow-x-auto relative"
             )}
         >
+            {popupState.show && (
+                <Notification
+                    className={cn("py-3 px-5 w-fit h-fit")}
+                    onClose={handleSetNotificationState}
+                    title={popupState.title}
+                    type={popupState.type}
+                    description={popupState.description}
+                />
+            )}
             <div
                 className={cn(
                     "w-full h-fit rounded-2xl min-w-48 max-w-86",
@@ -56,12 +140,7 @@ export default function Home() {
                 <span className={cn("w-full flex-1 gap-3", "flex flex-col")}>
                     <Input
                         title="Nama Pengguna"
-                        onChange={(e) =>
-                            setUserLogin((prev) => ({
-                                ...prev,
-                                username: e.target.value,
-                            }))
-                        }
+                        onChange={(e) => handleUsernameChange(e)}
                         value={userLogin.username}
                         type="text"
                         placeholder="Nama pengguna"
@@ -70,12 +149,7 @@ export default function Home() {
                     <span className="flex w-full h-fit gap-1">
                         <Input
                             title="Kata Sandi"
-                            onChange={(e) => {
-                                setUserLogin((prev) => ({
-                                    ...prev,
-                                    password: e.target.value,
-                                }))
-                            }}
+                            onChange={(e) => handlePasswordChange(e)}
                             value={userLogin.password}
                             type="password"
                             placeholder="Kata sandi"
@@ -86,23 +160,26 @@ export default function Home() {
                         title="Ingat saya"
                         className="w-fit h-fit gap-2"
                         active={userLogin.isRemember}
-                        onClick={() =>
-                            setUserLogin((prev) => ({
-                                ...prev,
-                                isRemember: !prev.isRemember,
-                            }))
-                        }
+                        onClick={handleIsRememberChange}
                     />
                 </span>
                 <Button
+                    disabled={isLoggingIn}
                     onClick={handleSubmit}
                     className={cn(
                         "px-3 py-1 max-w-32 w-full h-10",
-                        "disabled:opacity-50 disabled:cursor-not-allowed"
+                        "disabled:pointer-events-none disabled:select-none",
+                        "disabled:bg-indigo-300"
                     )}
                 >
-                    Masuk
-                    <LogIn strokeWidth={2} className="size-4 text-white" />
+                    {isLoggingIn ? (
+                        "Masuk..."
+                    ) : (
+                        <>
+                            Masuk
+                            <LogIn strokeWidth={2} className="size-4 text-white" />
+                        </>
+                    )}
                 </Button>
             </div>
             <p className="text-xs text-center max-w-86 text-wrap text-black/50">
