@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 
 export default function NotFound() {
     const router = useRouter()
+    const handleBack = () => router.back()
 
     return (
         <div
@@ -20,7 +21,7 @@ export default function NotFound() {
                 <h4 className="text-center font-medium">Halaman Tidak Ditemukan</h4>
             </div>
             <button
-                onClick={() => router.back()}
+                onClick={handleBack}
                 className={cn(
                     "h-10 px-5 rounded-md text-sm",
                     "cursor-pointer overflow-hidden",
