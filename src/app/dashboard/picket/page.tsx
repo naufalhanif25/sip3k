@@ -3,12 +3,14 @@
 import { usePathname } from "next/navigation"
 import { cn } from "@/app/lib/cn"
 import { Plus } from "lucide-react"
+import { useState } from "react"
 import Dashboard from "@/app/components/dashboard/dashboard"
 import { DashboardSubPage } from "@/app/props/dashboard"
 import * as Table from "@/app/components/table"
-import PicketBox from "@/app/components/dashboard/picket-box"
+import PicketBox from "@/app/components/dashboard/picket/picket-box"
 import variables from "../../data/variables.json"
 import Button from "@/app/components/button"
+import EmployeeFormPopup from "@/app/components/dashboard/picket/employee-form-popup"
 
 export default function Picket() {
     const path = usePathname()
@@ -17,15 +19,40 @@ export default function Picket() {
         title: target?.name ?? path.replace(/\b\w/g, (char) => char.toUpperCase()),
         description: target?.description ?? path.replace(/\b\w/g, (char) => char.toUpperCase()),
     })
+    const [showFormPopup, setShowFormPopup] = useState<boolean>(false)
+    const handleOpenFormPopup = () => {
+        setShowFormPopup(true)
+    }
+    const handleCloseFormPopup = () => {
+        setShowFormPopup(false)
+    }
+    const handleAddEmployee = () => {
+        handleCloseFormPopup()
+    }
 
     return (
         <Dashboard
             className={cn(
                 "w-dvw h-dvh",
                 "flex flex-col items-start justify-center",
-                "overflow-hidden"
+                "overflow-hidden relative"
             )}
         >
+            {showFormPopup && (
+                <div
+                    className={cn(
+                        "absolute w-full h-full top-0 left-0 p-8",
+                        "flex items-center justify-center",
+                        "bg-black/50 overflow-hidden"
+                    )}
+                >
+                    <EmployeeFormPopup
+                        className="max-w-100 w-full h-fit p-5 gap-4"
+                        onCencel={handleCloseFormPopup}
+                        onAddEmployee={handleAddEmployee}
+                    />
+                </div>
+            )}
             <div
                 className={cn("flex flex-col items-start justify-start", "p-4 gap-1 w-full h-full")}
             >
@@ -60,6 +87,7 @@ export default function Picket() {
                             <PicketBox
                                 className="w-full h-fit p-4"
                                 name="John Doe"
+                                category="III/c"
                                 nip="19990101 200001 1 001"
                                 lastRemind="03:00 WIB"
                                 onDone={() => {}}
@@ -68,6 +96,7 @@ export default function Picket() {
                             <PicketBox
                                 className="w-full h-fit p-4"
                                 name="John Doe"
+                                category="II/d"
                                 nip="19990101 200001 1 001"
                                 lastRemind="03:00 WIB"
                                 onDone={() => {}}
@@ -85,37 +114,39 @@ export default function Picket() {
                             <h2 className="font-semibold text-md truncate text-nowrap max-w-full">
                                 Daftar Pegawai
                             </h2>
-                            <Button className="h-7 aspect-square w-fit text-sm">
+                            <Button
+                                onClick={handleOpenFormPopup}
+                                className="h-7 aspect-square w-fit text-sm"
+                            >
                                 <Plus className="size-4 shrink-0" />
                             </Button>
                         </span>
                         <span className="w-full max-w-full h-fit overflow-x-auto">
                             <Table.Table className="w-full max-w-full h-fit">
-                                <Table.TableHeader names={["No.", "Nama", "NIP", "No. HP"]} />
+                                <Table.TableHeader
+                                    names={[
+                                        "No.",
+                                        "Nama",
+                                        "Jabatan",
+                                        "Golongan",
+                                        "NIP",
+                                        "No. HP",
+                                        "Jadwal",
+                                    ]}
+                                />
                                 <Table.TableBody>
-                                    <Table.TableRow>
-                                        <Table.TableCell className="text-center">
-                                            1.
+                                    <Table.TableRow className="text-center">
+                                        <Table.TableCell>1.</Table.TableCell>
+                                        <Table.TableCell className="text-left">
+                                            Naufal Hanif
                                         </Table.TableCell>
-                                        <Table.TableCell>Naufal Hanif</Table.TableCell>
+                                        <Table.TableCell className="text-left">
+                                            Software Developer
+                                        </Table.TableCell>
+                                        <Table.TableCell>III/c</Table.TableCell>
                                         <Table.TableCell>2308107010025</Table.TableCell>
                                         <Table.TableCell>081212345678</Table.TableCell>
-                                    </Table.TableRow>
-                                    <Table.TableRow>
-                                        <Table.TableCell className="text-center">
-                                            2.
-                                        </Table.TableCell>
-                                        <Table.TableCell>Naufal Hanif</Table.TableCell>
-                                        <Table.TableCell>2308107010025</Table.TableCell>
-                                        <Table.TableCell>081212345678</Table.TableCell>
-                                    </Table.TableRow>
-                                    <Table.TableRow>
-                                        <Table.TableCell className="text-center">
-                                            3.
-                                        </Table.TableCell>
-                                        <Table.TableCell>Naufal Hanif</Table.TableCell>
-                                        <Table.TableCell>2308107010025</Table.TableCell>
-                                        <Table.TableCell>081212345678</Table.TableCell>
+                                        <Table.TableCell>5 Agustus 2026</Table.TableCell>
                                     </Table.TableRow>
                                 </Table.TableBody>
                             </Table.Table>
