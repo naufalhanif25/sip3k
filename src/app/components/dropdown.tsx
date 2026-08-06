@@ -15,31 +15,36 @@ export default function Dropdown({
     ...props
 }: DropdownProps) {
     const [openDropdown, setOpenDropdown] = useState<boolean>(false)
+    const handleSetDropdownState = () => setOpenDropdown((prev) => !prev)
+    const handleOptionChoose = (option: string) => {
+        onChoose!(option)
+        setOpenDropdown(false)
+    }
 
     return (
         <div
             className={cn(className, "flex flex-col items-center justify-center", "relative")}
             {...props}
         >
-            <div className={cn("flex flex-col w-full h-fit gap-1")}>
+            <div className={cn("flex flex-col w-full h-fit gap-1 overflow-hidden")}>
                 <h3 className="text-sm font-medium text-black/75">{title}</h3>
                 <span
-                    onClick={() => setOpenDropdown((prev) => !prev)}
+                    onClick={handleSetDropdownState}
                     className={cn(
-                        "w-full min-w-fit px-3 py-1 h-10 gap-2",
+                        "w-full max-w-full px-3 py-1 h-10 gap-2",
                         "rounded-md bg-indigo-50 outline outline-indigo-200",
                         "flex items-center justify-between",
-                        "cursor-pointer"
+                        "cursor-pointer overflow-hidden"
                     )}
                 >
-                    <label
+                    <p
                         className={cn(
-                            "cursor-pointer text-sm",
+                            "cursor-pointer text-sm flex-1 truncate",
                             value ? "text-black" : "text-black/50"
                         )}
                     >
                         {value || placeholder}
-                    </label>
+                    </p>
                     <ChevronDown
                         className={cn(
                             "size-4 shrink-0",
@@ -63,10 +68,7 @@ export default function Dropdown({
                         return (
                             <span
                                 key={index}
-                                onClick={() => {
-                                    onChoose!(option)
-                                    setOpenDropdown(false)
-                                }}
+                                onClick={() => handleOptionChoose(option)}
                                 className={cn(
                                     "px-3 py-1 h-10 w-full min-w-fit",
                                     "flex items-center justify-start",

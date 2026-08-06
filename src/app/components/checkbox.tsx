@@ -4,13 +4,7 @@ import { cn } from "@/app/lib/cn"
 import { Check } from "lucide-react"
 import { CheckBoxProps } from "../props/component"
 
-export default function CheckBox({
-    className,
-    onClick,
-    title,
-    active,
-    ...props
-}: CheckBoxProps) {
+export default function CheckBox({ className, onClick, title, active, ...props }: CheckBoxProps) {
     return (
         <span
             onClick={onClick}
@@ -36,7 +30,7 @@ export default function CheckBox({
                     </span>
                 )}
             </span>
-            <p className="text-xs text-black/50 ">{title}</p>
+            {title && <p className="text-xs text-black/50 ">{title}</p>}
         </span>
     )
 }

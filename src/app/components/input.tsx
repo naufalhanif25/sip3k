@@ -15,6 +15,9 @@ export default function Input({
 }: InputProps) {
     const [showPassword, setShowPassword] = useState<boolean>(false)
     const [isFocus, setIsFocus] = useState<boolean>(false)
+    const handleSetPasswordState = () => setShowPassword((prev) => !prev)
+    const handleFocus = () => setIsFocus(true)
+    const handleUnfocus = () => setIsFocus(false)
 
     return (
         <span className="flex flex-col gap-1 w-full h-fit">
@@ -30,7 +33,7 @@ export default function Input({
             >
                 {type === "currency" && (
                     <span
-                        onClick={() => setShowPassword((prev) => !prev)}
+                        onClick={handleSetPasswordState}
                         className={cn(
                             "h-full aspect-square cursor-pointer shrink-0",
                             "flex items-center justify-center overflow-hidden"
@@ -41,8 +44,8 @@ export default function Input({
                 )}
                 <input
                     onChange={onChange}
-                    onFocus={() => setIsFocus(true)}
-                    onBlur={() => setIsFocus(false)}
+                    onFocus={handleFocus}
+                    onBlur={handleUnfocus}
                     type={
                         type === "password"
                             ? !showPassword
@@ -59,7 +62,7 @@ export default function Input({
                 />
                 {type === "password" && (
                     <span
-                        onClick={() => setShowPassword((prev) => !prev)}
+                        onClick={handleSetPasswordState}
                         className={cn(
                             "h-full aspect-square p-1.5 cursor-pointer",
                             "flex items-center justify-center overflow-hidden"

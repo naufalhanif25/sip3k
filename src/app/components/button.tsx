@@ -1,13 +1,13 @@
 "use client"
 
 import { cn } from "../lib/cn"
-import { HTMLAttributes } from "react"
+import { ButtonHTMLAttributes } from "react"
 
 export default function Button({
     className,
     children,
     ...props
-}: HTMLAttributes<HTMLButtonElement>) {
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
     return (
         <button
             className={cn(
