@@ -1,3 +1,5 @@
+"use client"
+
 import { ChangeEvent } from "react"
 import { Dispatch, SetStateAction } from "react"
 import { FormInputProps } from "../props/dashboard"

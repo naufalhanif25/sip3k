@@ -1,5 +1,3 @@
-"use server"
-
 import { NextRequest, NextResponse } from "next/server"
 import * as bcrypt from "bcrypt-ts"
 import * as jwt from "jsonwebtoken"
@@ -15,7 +13,7 @@ export async function POST(req: NextRequest) {
                     message: "Data body tidak lengkap. Nama pengguna dan kata sandi wajib terisi.",
                 },
                 {
-                    status: 401,
+                    status: 400,
                 }
             )
         }

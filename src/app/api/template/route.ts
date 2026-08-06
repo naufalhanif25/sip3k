@@ -1,5 +1,3 @@
-"use server"
-
 import { NextResponse } from "next/server"
 import path from "path"
 import { ExcelCellProps, ExcelCell } from "@/app/props/api"
