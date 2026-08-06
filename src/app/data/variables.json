@@ -4,14 +4,9 @@
     "longform": "Sistem Persuratan dan Penjadwalan Piket Kejaksaan",
     "copyright": "Hak Cipta © 2026 SIP3K. Semua Hak Dilindungi Undang-Undang.",
     "description": "Sistem Persuratan dan Penjadwalan Piket Kejaksaan (SIP3K) Negeri Banda Aceh",
-    "divisions": [
-        "Intel",
-        "Pembinaan",
-        "Pidum",
-        "Pidsus",
-        "PAPBB",
-        "Datun"
-    ],
+    "divisions": ["Intel", "Pembinaan", "Pidum", "Pidsus", "PAPBB", "Datun"],
+    "category": ["II/a", "II/b", "II/c", "II/d", "III/a", "III/b", "III/c", "III/d"],
+    "sptjbcode": [""],
     "paths": [
         {
             "name": "Dokumen SPTJB",
