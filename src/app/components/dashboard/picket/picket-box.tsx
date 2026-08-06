@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/app/lib/cn"
-import Button from "../button"
+import Button from "../../button"
 import { CheckCheck, Phone } from "lucide-react"
 import { PicketBoxProps } from "@/app/props/dashboard"
 
@@ -9,6 +9,7 @@ export default function PicketBox({
     className,
     name,
     nip,
+    category,
     lastRemind,
     onDone,
     onRemind,
@@ -32,9 +33,17 @@ export default function PicketBox({
                 )}
             >
                 <span className="w-full h-fit flex gap-4">
-                    <h5 className="flex-1 text-lg font-semibold truncate max-w-full">{name}</h5>
+                    <span
+                        className={cn(
+                            "flex-1 max-w-full h-fit gap-2",
+                            "flex items-center overflow-hidden"
+                        )}
+                    >
+                        <h5 className="text-lg font-semibold truncate">{name}</h5>
+                        <h6 className="font-semibold text-nowrap">({category})</h6>
+                    </span>
                     {lastRemind && (
-                        <p className="flex-1 max-w-32 text-xs text-right truncate text-black/50">
+                        <p className="flex-1 basis-0 max-w-32 text-xs text-right truncate text-black/50">
                             Dipanggil {lastRemind}
                         </p>
                     )}

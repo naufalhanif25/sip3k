@@ -5,9 +5,10 @@ import Input from "../../input"
 import Dropdown from "../../dropdown"
 import * as Table from "../../table"
 import Button from "../../button"
-import { Plus } from "lucide-react"
+import { PenBox, Plus, Printer, Trash } from "lucide-react"
 import { MainSPTJBProps } from "@/app/props/dashboard"
 import variables from "../../../data/variables.json"
+import CheckBox from "../../checkbox"
 
 export default function MainSPTJB({
     data,
@@ -59,29 +60,42 @@ export default function MainSPTJB({
             <div className={cn("w-full flex-1 flex flex-col", "overflow-auto")}>
                 <Table.Table className="w-full h-fit">
                     <Table.TableHeader
-                        names={["No.", "Nama", "Bidang", "Dibuat pada", "Diperbarui pada"]}
+                        names={[
+                            "Pilih",
+                            "Nama",
+                            "Bidang",
+                            "Dibuat pada",
+                            "Diperbarui pada",
+                            "Aksi",
+                        ]}
                     />
                     <Table.TableBody>
-                        <Table.TableRow>
-                            <Table.TableCell className="text-center">1.</Table.TableCell>
-                            <Table.TableCell>Dokumen SPTJB</Table.TableCell>
+                        <Table.TableRow className="text-center">
+                            <Table.TableCell>
+                                <CheckBox active={true} />
+                            </Table.TableCell>
+                            <Table.TableCell className="text-left">Dokumen SPTJB</Table.TableCell>
                             <Table.TableCell>Pembinaan</Table.TableCell>
                             <Table.TableCell>1 Agustus 2026</Table.TableCell>
                             <Table.TableCell>3 Agustus 2026</Table.TableCell>
-                        </Table.TableRow>
-                        <Table.TableRow>
-                            <Table.TableCell className="text-center">2.</Table.TableCell>
-                            <Table.TableCell>Dokumen SPTJB</Table.TableCell>
-                            <Table.TableCell>Intel</Table.TableCell>
-                            <Table.TableCell>1 Agustus 2026</Table.TableCell>
-                            <Table.TableCell>3 Agustus 2026</Table.TableCell>
-                        </Table.TableRow>
-                        <Table.TableRow>
-                            <Table.TableCell className="text-center">3.</Table.TableCell>
-                            <Table.TableCell>Dokumen SPTJB</Table.TableCell>
-                            <Table.TableCell>Pidsus</Table.TableCell>
-                            <Table.TableCell>1 Agustus 2026</Table.TableCell>
-                            <Table.TableCell>3 Agustus 2026</Table.TableCell>
+                            <Table.TableCell>
+                                <div
+                                    className={cn(
+                                        "w-full h-full gap-2 p-1",
+                                        "flex items-center justify-center"
+                                    )}
+                                >
+                                    <Button className="h-8 aspect-square w-fit">
+                                        <Trash className="shrink-0 size-4 text-white" />
+                                    </Button>
+                                    <Button className="h-8 aspect-square w-fit">
+                                        <PenBox className="shrink-0 size-4 text-white" />
+                                    </Button>
+                                    <Button className="h-8 aspect-square w-fit">
+                                        <Printer className="shrink-0 size-4 text-white" />
+                                    </Button>
+                                </div>
+                            </Table.TableCell>
                         </Table.TableRow>
                     </Table.TableBody>
                 </Table.Table>

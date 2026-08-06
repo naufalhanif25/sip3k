@@ -2,15 +2,20 @@
 
 import { cn } from "@/app/lib/cn"
 import Button from "../../button"
-import { NewSPTJBProps } from "@/app/props/dashboard"
-import { ArrowLeft, Save, Printer, Plus, Trash } from "lucide-react"
-import { ChangeEvent, useState } from "react"
+import { NewSPTJBProps, ParsedMergeProps } from "@/app/props/dashboard"
+import { ArrowLeft, Save, Printer, Plus, Trash, ChevronLeft, ChevronRight } from "lucide-react"
+import { ChangeEvent, useMemo, useState } from "react"
 import Input from "../../input"
 import Dropdown from "../../dropdown"
 import variables from "../../../data/variables.json"
 import FormSection from "./form-section"
 import AdditionalForm from "./additional-form"
 import { FormInputProps, FormInput } from "@/app/props/dashboard"
+import { useEffect } from "react"
+import { TemplateGetResponse, TemplateGetResponseProps } from "@/app/props/api"
+import * as SPTJBHandler from "@/app/lib/sptjb-handler"
+import { parseMergeRanges } from "@/app/lib/sptjb-handler"
+import ExcelTable from "./excel-table"
 
 export default function NewSPTJB({
     data,
@@ -23,79 +28,85 @@ export default function NewSPTJB({
     className,
     ...props
 }: NewSPTJBProps) {
-    const [formData, setFormData] = useState<FormInputProps[]>([
-        FormInput.parse({
-            code: "",
-            name: "",
-            description: "",
-            date: new Date(),
-            total: 0,
-        }),
-    ])
-
-    const handleAddNewForm = () => {
-        setFormData((prev) => [
-            ...prev,
-            FormInput.parse({
-                code: "",
-                name: "",
-                description: "",
-                date: new Date(),
-                total: 0,
-            }),
-        ])
-    }
-
-    const handleCodeChange = (value: string, index: number) =>
-        setFormData((prev) =>
-            prev.map((item, idx) => (idx === index ? { ...item, code: value } : item))
+    const formInputInit = FormInput.parse({
+        code: "",
+        name: "",
+        description: "",
+        date: new Date(),
+        total: 0,
+        ppn: 0,
+        pph: 0,
+    })
+    const [formData, setFormData] = useState<FormInputProps[]>([formInputInit])
+    const [formDataIndex, setFormDataIndex] = useState<number>(0)
+    const [templateData, setTemplateData] = useState<TemplateGetResponseProps | null>(null)
+    const isLastFormData = useMemo(() => {
+        return formDataIndex === formData.length - 1
+    }, [formData, formDataIndex])
+    const handleAddNewForm = () =>
+        SPTJBHandler.addNewFormHandler(
+            setFormData,
+            setFormDataIndex,
+            formInputInit,
+            formData.length
         )
-
+    const handleFormPrev = () => SPTJBHandler.formPrevHandler(setFormDataIndex)
+    const handleFormNext = () => SPTJBHandler.formNextHandler(setFormDataIndex, formData.length - 1)
+    const handleCodeChange = (value: string, index: number) =>
+        SPTJBHandler.codeChangeHandler(setFormData, value, index)
     const handleNameChange = (
         e: ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement,
             HTMLInputElement | HTMLTextAreaElement
         >,
         index: number
-    ) =>
-        setFormData((prev) =>
-            prev.map((item, idx) => (idx === index ? { ...item, name: e.target.value } : item))
-        )
-
+    ) => SPTJBHandler.nameChangeHandler(setFormData, e, index)
     const handleDescChange = (
         e: ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement,
             HTMLInputElement | HTMLTextAreaElement
         >,
         index: number
-    ) =>
-        setFormData((prev) =>
-            prev.map((item, idx) =>
-                idx === index ? { ...item, description: e.target.value } : item
-            )
+    ) => SPTJBHandler.descChangeHandler(setFormData, e, index)
+    const handleDateChange = (date: Date, index: number) =>
+        SPTJBHandler.dateChangeHandler(setFormData, date, index)
+    const handleTotalChange = (e: ChangeEvent<HTMLInputElement, HTMLInputElement>, index: number) =>
+        SPTJBHandler.totalChangeHandler(setFormData, e, index)
+    const handlePPNChange = (e: ChangeEvent<HTMLInputElement, HTMLInputElement>, index: number) =>
+        SPTJBHandler.PPNChangeHandler(setFormData, e, index)
+    const handlePPhChange = (e: ChangeEvent<HTMLInputElement, HTMLInputElement>, index: number) =>
+        SPTJBHandler.PPhChangeHandler(setFormData, e, index)
+    const handleDeleteForm = (index: number) =>
+        SPTJBHandler.deleteFormHandler(
+            setFormData,
+            setFormDataIndex,
+            formInputInit,
+            index,
+            formData.length - 1
         )
+    const isTemplateDataChanged = useMemo(() => {
+        return JSON.stringify(formData) !== JSON.stringify([formInputInit])
+    }, [formData, formInputInit])
 
-    const handleDateChange = (e: ChangeEvent<HTMLInputElement, HTMLInputElement>, index: number) =>
-        setFormData((prev) =>
-            prev.map((item, idx) =>
-                idx === index ? { ...item, date: e.target.valueAsDate! } : item
-            )
-        )
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await fetch("/api/template")
+                const data = TemplateGetResponse.parse(await res.json())
 
-    const handleTotalChange = (
-        e: ChangeEvent<HTMLInputElement, HTMLInputElement>,
-        index: number
-    ) => {
-        let value = e.target.value
-        value = value.replace(/\D/g, "")
-        value = value.replace(/^0+(?=\d)/, "")
+                if (data.success) {
+                    setTemplateData(data)
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        fetchData()
+    }, [])
 
-        setFormData((prev) =>
-            prev.map((item, idx) =>
-                idx === index ? { ...item, total: value === "" ? 0 : Number(value) } : item
-            )
-        )
-    }
+    const parsedMerges = templateData?.data.merges
+        ? parseMergeRanges(templateData?.data.merges)
+        : { mergeMap: new Map(), hiddenCells: new Set() }
 
     return (
         <div className={className} {...props}>
@@ -108,18 +119,30 @@ export default function NewSPTJB({
                 )}
             >
                 <span className={cn("w-fit h-fit gap-2", "flex items-center justify-center")}>
-                    <Button onClick={onBack} className="aspect-square h-8 w-fit text-sm">
+                    <Button
+                        onClick={() => onBack!(isTemplateDataChanged)}
+                        className="aspect-square h-8 w-fit text-sm"
+                    >
                         <ArrowLeft className="size-4 shrink-0" />
                     </Button>
                 </span>
                 <span className={cn("w-fit h-fit gap-2", "flex items-center justify-center")}>
-                    <Button onClick={onDelete} className="aspect-square h-8 w-fit text-sm">
+                    <Button
+                        onClick={() => onDelete!(isTemplateDataChanged)}
+                        className="aspect-square h-8 w-fit text-sm"
+                    >
                         <Trash className="size-4 shrink-0" />
                     </Button>
-                    <Button onClick={onPrint} className="aspect-square h-8 w-fit text-sm">
+                    <Button
+                        onClick={() => onPrint!(isTemplateDataChanged)}
+                        className="aspect-square h-8 w-fit text-sm"
+                    >
                         <Printer className="size-4 shrink-0" />
                     </Button>
-                    <Button onClick={onSave} className="aspect-square h-8 w-fit text-sm">
+                    <Button
+                        onClick={() => onSave!(isTemplateDataChanged)}
+                        className="aspect-square h-8 w-fit text-sm"
+                    >
                         <Save className="size-4 shrink-0" />
                     </Button>
                 </span>
@@ -134,27 +157,60 @@ export default function NewSPTJB({
                     className={cn(
                         "w-full md:flex-1 h-full",
                         "bg-indigo-100 rounded-lg overflow-hidden",
-                        "relative"
+                        "flex flex-col items-start justify-start"
                     )}
                 >
                     <span
                         className={cn(
-                            "w-full h-fit gap-2 px-4 py-3",
-                            "absolute top-0 left-0",
+                            "w-full h-fit px-4 py-3",
                             "bg-indigo-400 text-white",
+                            "flex flex-col items-start justify-start",
                             "overflow-hidden"
                         )}
                     >
                         <h4 className="text-sm truncate max-w-full">Pratinjau Dokumen</h4>
                         <p className="text-xs text-white/75">{data.name || "Dokumen Tanpa Nama"}</p>
                     </span>
-                    <span className="w-full h-full overflow-auto">
-                        {/* TODO: Preview Dokumen */}
+                    <span
+                        className={cn(
+                            "w-full flex-1 overflow-auto overscroll-none",
+                            "flex items-start justify-start"
+                        )}
+                    >
+                        {templateData?.data ? (
+                            <span
+                                className={cn(
+                                    "h-fit w-fit p-5",
+                                    "flex items-start justify-start",
+                                    "bg-white"
+                                )}
+                            >
+                                <div className="w-fit h-fit">
+                                    <ExcelTable
+                                        className="w-min border border-gray-400"
+                                        data={templateData}
+                                        merges={parsedMerges as ParsedMergeProps}
+                                    />
+                                </div>
+                            </span>
+                        ) : (
+                            <span
+                                className={cn(
+                                    "w-full h-full p-5",
+                                    "flex items-center justify-center",
+                                    "overflow-hidden"
+                                )}
+                            >
+                                <h3 className="max-w-50 text-center text-black/50">
+                                    Tidak ada dokumen untuk ditampilkan
+                                </h3>
+                            </span>
+                        )}
                     </span>
                 </div>
                 <div
                     className={cn(
-                        "w-full md:w-1/2 md:max-w-80 max-h-50 md:max-h-full h-full",
+                        "w-full md:w-1/2 md:max-w-100 max-h-50 md:max-h-full h-full",
                         "bg-indigo-100 overflow-y-auto rounded-lg",
                         "flex flex-col items-center justify-start gap-3",
                         "px-5 pt-3 pb-4"
@@ -186,33 +242,56 @@ export default function NewSPTJB({
                             />
                         </FormSection>
                         <FormSection title="Data Tambahan" className="w-full h-fit gap-2">
-                            {formData.map((data, index) => {
-                                return (
-                                    <AdditionalForm
-                                        key={index}
-                                        className="w-full h-fit p-4 gap-2"
-                                        data={data}
-                                        title={`Formulir ${index + 1}`}
-                                        onChoose={(value) => handleCodeChange(value, index)}
-                                        onNameChange={(e) => handleNameChange(e, index)}
-                                        onDescChange={(e) => handleDescChange(e, index)}
-                                        onDateChange={(e) => handleDateChange(e, index)}
-                                        onTotalChange={(e) => handleTotalChange(e, index)}
-                                    />
-                                )
-                            })}
+                            <AdditionalForm
+                                className="w-full h-fit p-4 gap-2"
+                                data={formData[formDataIndex]}
+                                title={`Formulir ${formDataIndex + 1}`}
+                                onDelete={() => handleDeleteForm(formDataIndex)}
+                                onChoose={(value) => handleCodeChange(value, formDataIndex)}
+                                onNameChange={(e) => handleNameChange(e, formDataIndex)}
+                                onDescChange={(e) => handleDescChange(e, formDataIndex)}
+                                onDateChange={(e) => handleDateChange(e, formDataIndex)}
+                                onTotalChange={(e) => handleTotalChange(e, formDataIndex)}
+                                onPPNChange={(e) => handlePPNChange(e, formDataIndex)}
+                                onPPhChange={(e) => handlePPhChange(e, formDataIndex)}
+                            />
                             <div
                                 className={cn(
-                                    "w-full h-fit rounded-md",
-                                    "flex items-center justify-end"
+                                    "w-full max-w-full h-fit rounded-md gap-2",
+                                    "flex items-center justify-end",
+                                    "overflow-hidden"
                                 )}
                             >
                                 <Button
-                                    onClick={handleAddNewForm}
-                                    className="py-1 px-5 h-10 w-full text-sm"
+                                    disabled={formDataIndex === 0}
+                                    onClick={handleFormPrev}
+                                    className={cn(
+                                        "h-10 aspect-square text-sm",
+                                        "disabled:pointer-events-none disabled:select-none",
+                                        "disabled:bg-indigo-300"
+                                    )}
                                 >
-                                    <Plus className="size-4 shrink-0" />
-                                    Tambah Formulir
+                                    <ChevronLeft className="size-4 shrink-0" />
+                                </Button>
+                                <span
+                                    className={cn(
+                                        "h-10 flex-1 p-2 flex items-center justify-center",
+                                        "bg-indigo-200 rounded-md overflow-hidden"
+                                    )}
+                                >
+                                    <p className="truncate max-w-full">
+                                        {formDataIndex + 1} / {formData.length}
+                                    </p>
+                                </span>
+                                <Button
+                                    onClick={isLastFormData ? handleAddNewForm : handleFormNext}
+                                    className="h-10 aspect-square text-sm"
+                                >
+                                    {isLastFormData ? (
+                                        <Plus className="size-4 shrink-0" />
+                                    ) : (
+                                        <ChevronRight className="size-4 shrink-0" />
+                                    )}
                                 </Button>
                             </div>
                         </FormSection>
