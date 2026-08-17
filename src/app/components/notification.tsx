@@ -1,7 +1,7 @@
 "use client"
 
-import { cn } from "../lib/cn"
-import { NotificationProps } from "../props/component"
+import { cn } from "@/app/lib/global-utils"
+import { type NotificationProps } from "@/app/props/component"
 import { useState, useEffect } from "react"
 import { X } from "lucide-react"
 

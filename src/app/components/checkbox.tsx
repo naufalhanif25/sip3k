@@ -1,8 +1,8 @@
 "use client"
 
-import { cn } from "@/app/lib/cn"
+import { cn } from "@/app/lib/global-utils"
 import { Check } from "lucide-react"
-import { CheckBoxProps } from "../props/component"
+import { type CheckBoxProps } from "@/app/props/component"
 
 export default function CheckBox({ className, onClick, title, active, ...props }: CheckBoxProps) {
     return (

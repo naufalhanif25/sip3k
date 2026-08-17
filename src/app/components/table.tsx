@@ -1,17 +1,16 @@
 "use client"
 
-import { cn } from "../lib/cn"
+import { cn } from "@/app/lib/global-utils"
 import { HTMLAttributes, TdHTMLAttributes } from "react"
-import { TableHeadProps } from "../props/component"
+import { type TableHeadProps } from "@/app/props/component"
 
 export function TableHeader({ names, className, ...props }: TableHeadProps) {
-    const formattedNames = names.map((key) =>
-        key
+    const formattedNames = names.map((key) => {
+        return key
             .split("_")
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ")
-    )
-
+    })
     return (
         <thead className={cn(className, "bg-indigo-200 border border-indigo-300")} {...props}>
             <tr className="text-sm font-semibold text-center">

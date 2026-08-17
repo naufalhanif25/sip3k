@@ -1,74 +1,11 @@
 "use client"
 
-import { cn } from "../lib/cn"
+import { cn } from "@/app/lib/global-utils"
 import { useState, useMemo } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { WeekdayFormat } from "../props/component"
-import { CalendarDayProps, CalendarDay } from "../props/component"
-import { DayPickerProps } from "../props/component"
-
-export function getWeekdays(locale: string = "id-ID", format: WeekdayFormat = "short") {
-    const baseDate = new Date(2024, 0, 7)
-    const days = Array.from({ length: 7 }, (_, index) => {
-        const date = new Date(baseDate)
-        date.setDate(baseDate.getDate() + index)
-
-        return date.toLocaleDateString(locale, { weekday: format })
-    })
-    return days
-}
-
-export function getMonthDays(year: number, month: number) {
-    const today = new Date()
-    const firstDayOfMonth = new Date(year, month, 1)
-    const totalDaysInMonth = new Date(year, month + 1, 0).getDate()
-    const firstDayIndex = firstDayOfMonth.getDay()
-    const days: CalendarDayProps[] = []
-    const prevMonthTotalDays = new Date(year, month, 0).getDate()
-
-    for (let index = firstDayIndex - 1; index >= 0; index--) {
-        const dayNumber = prevMonthTotalDays - index
-
-        days.push(
-            CalendarDay.parse({
-                date: new Date(year, month - 1, dayNumber),
-                dayNumber,
-                isCurrentMonth: false,
-                isToday: false,
-            })
-        )
-    }
-    for (let day = 1; day <= totalDaysInMonth; day++) {
-        const date = new Date(year, month, day)
-        const isToday =
-            date.getDate() === today.getDate() &&
-            date.getMonth() === today.getMonth() &&
-            date.getFullYear() === today.getFullYear()
-
-        days.push(
-            CalendarDay.parse({
-                date,
-                dayNumber: day,
-                isCurrentMonth: true,
-                isToday,
-            })
-        )
-    }
-    const totalGridCells = days.length > 35 ? 42 : 35
-    const remainingCells = totalGridCells - days.length
-
-    for (let index = 1; index <= remainingCells; index++) {
-        days.push(
-            CalendarDay.parse({
-                date: new Date(year, month + 1, index),
-                dayNumber: index,
-                isCurrentMonth: false,
-                isToday: false,
-            })
-        )
-    }
-    return days
-}
+import { type DayPickerProps } from "@/app/props/component"
+import { dateTZ } from "@/app/lib/date-timezone"
+import * as DayPickerHelper from "@/app/lib/day-picker-helper"
 
 export default function DayPicker({
     defaultDate,
@@ -77,13 +14,18 @@ export default function DayPicker({
     className,
     ...props
 }: DayPickerProps) {
-    const days = getWeekdays("id-ID", "short")
-    const [currentDate, setCurrentDate] = useState<Date>(defaultDate || new Date())
-    const year = currentDate.getFullYear()
-    const month = currentDate.getMonth()
-    const calendarDays = useMemo(() => getMonthDays(year, month), [year, month])
-    const handlePrevMonth = () => setCurrentDate(new Date(year, month - 1, 1))
-    const handleNextMonth = () => setCurrentDate(new Date(year, month + 1, 1))
+    const days = DayPickerHelper.getWeekdays()
+    const [currentDate, setCurrentDate] = useState<Date>(defaultDate || dateTZ.nowDate())
+    const tzDate = dateTZ.parseTZ(currentDate)
+    const year = tzDate.year()
+    const month = tzDate.month()
+    const calendarDays = useMemo(() => DayPickerHelper.getMonthDays(year, month), [year, month])
+    const handlePrevMonth = () => {
+        setCurrentDate(dateTZ.parseTZ(currentDate).subtract(1, "month").startOf("month").toDate())
+    }
+    const handleNextMonth = () => {
+        setCurrentDate(dateTZ.parseTZ(currentDate).add(1, "month").startOf("month").toDate())
+    }
 
     return (
         <div
@@ -165,7 +107,7 @@ export default function DayPicker({
                             >
                                 {calendarDay.isCurrentMonth ? (
                                     <button
-                                        onClick={() => onSelect!(calendarDay.date)}
+                                        onClick={() => onSelect && onSelect(calendarDay.date)}
                                         className={cn(
                                             "text-center w-full h-full cursor-pointer",
                                             "flex items-center justify-center",

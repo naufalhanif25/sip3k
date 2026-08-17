@@ -1,40 +1,58 @@
 "use client"
 
-import { cn } from "../lib/cn"
-import { useState } from "react"
+import { cn } from "@/app/lib/global-utils"
+import { useEffect, useRef, useState } from "react"
 import { ChevronDown } from "lucide-react"
-import { DropdownProps } from "../props/component"
+import { type DropdownProps } from "@/app/props/component"
 
 export default function Dropdown({
     onChoose,
     title,
     placeholder,
+    active = true,
     options,
     value,
     className,
     ...props
 }: DropdownProps) {
+    const dropdownRef = useRef<HTMLDivElement | null>(null)
     const [openDropdown, setOpenDropdown] = useState<boolean>(false)
     const handleSetDropdownState = () => setOpenDropdown((prev) => !prev)
     const handleOptionChoose = (option: string) => {
-        onChoose!(option)
+        if (onChoose) onChoose(option)
         setOpenDropdown(false)
     }
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpenDropdown(false)
+            }
+        }
+        if (openDropdown) document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [openDropdown])
+
     return (
         <div
+            ref={dropdownRef}
             className={cn(className, "flex flex-col items-center justify-center", "relative")}
             {...props}
         >
-            <div className={cn("flex flex-col w-full h-fit gap-1 overflow-hidden")}>
-                <h3 className="text-sm font-medium text-black/75">{title}</h3>
+            <div className={cn("flex flex-col w-full h-fit gap-1")}>
+                {title && <h3 className="text-sm font-medium text-black/75">{title}</h3>}
                 <span
-                    onClick={handleSetDropdownState}
+                    onClick={active ? handleSetDropdownState : () => {}}
                     className={cn(
                         "w-full max-w-full px-3 py-1 h-10 gap-2",
                         "rounded-md bg-indigo-50 outline outline-indigo-200",
                         "flex items-center justify-between",
-                        "cursor-pointer overflow-hidden"
+                        "cursor-pointer overflow-hidden",
+                        active
+                            ? "pointer-events-auto opacity-100"
+                            : "pointer-events-none select-none opacity-50"
                     )}
                 >
                     <p
@@ -64,25 +82,29 @@ export default function Dropdown({
                         "overflow-hidden"
                     )}
                 >
-                    {options.map((option, index) => {
-                        return (
-                            <span
-                                key={index}
-                                onClick={() => handleOptionChoose(option)}
-                                className={cn(
-                                    "px-3 py-1 h-10 w-full min-w-fit",
-                                    "flex items-center justify-start",
-                                    option === value
-                                        ? "bg-indigo-100"
-                                        : "bg-indigo-50 hover:bg-indigo-100",
-                                    "transition duration-100 ease-out",
-                                    "cursor-pointer truncate text-sm"
-                                )}
-                            >
-                                {option}
-                            </span>
-                        )
-                    })}
+                    <span
+                        className={cn("w-full h-fit max-h-50", "overscroll-none overflow-y-auto")}
+                    >
+                        {options.map((option, index) => {
+                            return (
+                                <span
+                                    key={index}
+                                    onClick={() => handleOptionChoose(option)}
+                                    className={cn(
+                                        "px-3 py-1 h-10 w-full min-w-fit",
+                                        "flex items-center justify-start",
+                                        option === value
+                                            ? "bg-indigo-100"
+                                            : "bg-indigo-50 hover:bg-indigo-100",
+                                        "transition duration-100 ease-out",
+                                        "cursor-pointer truncate text-sm"
+                                    )}
+                                >
+                                    {option}
+                                </span>
+                            )
+                        })}
+                    </span>
                 </span>
             </div>
         </div>
