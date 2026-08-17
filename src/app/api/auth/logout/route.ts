@@ -1,3 +1,5 @@
+import { writeLog } from "@/app/lib/logs-utils"
+import { SERVER_ERROR_RESPONSE } from "@/app/vars/db-vars"
 import { NextResponse } from "next/server"
 
 export async function POST() {
@@ -6,7 +8,6 @@ export async function POST() {
             success: true,
             message: "Berhasil keluar dari sistem.",
         })
-
         response.cookies.set("token", "", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -14,19 +15,10 @@ export async function POST() {
             maxAge: 0,
             path: "/",
         })
-
         return response
     } catch (err) {
         console.error(err)
-
-        return NextResponse.json(
-            {
-                success: false,
-                message: "Terjadi kesalahan internal server.",
-            },
-            {
-                status: 500,
-            }
-        )
+        await writeLog(err, "ERROR")
+        return SERVER_ERROR_RESPONSE
     }
 }
