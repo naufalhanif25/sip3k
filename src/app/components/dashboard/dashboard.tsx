@@ -1,31 +1,97 @@
 "use client"
 
-import { cn } from "@/app/lib/cn"
+import { cn } from "@/app/lib/global-utils"
 import { useRouter, usePathname } from "next/navigation"
-import { SidebarOpen, SidebarClose, CircleUserRound, LogOut } from "lucide-react"
-import { DashboardProps } from "@/app/props/dashboard"
-import { useState } from "react"
-import variables from "../../data/variables.json"
-import DashboardSidebarButton from "./sidebar-button"
-import { ComponentRegistry } from "@/app/props/component"
+import { SidebarOpen } from "lucide-react"
+import { type DashboardProps } from "@/app/props/dashboard"
+import { useEffect, useState } from "react"
+import variables from "@/app/data/variables.json"
+import Notification from "@/app/components/notification"
+import { UserData, type UserDataProps } from "@/app/props/api"
+import Sidebar from "@/app/components/dashboard/sidebar"
+import InfoPopup from "@/app/components/info-popup"
+import { POPUP_DATA_DEFAULT, USER_DATA_DEFAULT } from "@/app/vars/global-vars"
+import { handleUserLogout } from "@/app/lib/user-fetch-handler"
+import { useNotification } from "@/app/hooks/dashboard"
+import FloatingContainer from "@/app/components/floating-container"
 
 export default function Dashboard({ children, className, ...props }: DashboardProps) {
     const router = useRouter()
     const path = usePathname()
     const [openSidebar, setOpenSidebar] = useState<boolean>(false)
+    const { notificationState, setVisibilityState, showNotification } =
+        useNotification(POPUP_DATA_DEFAULT)
+    const [showPopup, setShowPopup] = useState<boolean>(false)
+    const [userData, setUserData] = useState<UserDataProps>(USER_DATA_DEFAULT)
+
+    useEffect(() => {
+        const loadLocalStorageData = () => {
+            const user = localStorage.getItem("user")
+            if (!user) return
+
+            const parsedUser = JSON.parse(user)
+            setUserData(UserData.parse(parsedUser))
+        }
+        loadLocalStorageData()
+    }, [])
+
+    const handleSetSidebarState = () => setOpenSidebar((prev) => !prev)
+    const handleShowInfoLogout = () => {
+        setOpenSidebar(false)
+        setShowPopup(true)
+    }
+    const handleLogout = () => {
+        handleUserLogout(
+            () => {
+                localStorage.removeItem("user")
+                router.push("/")
+            },
+            (message) => showNotification("Gagal Keluar", message, "error")
+        )
+        handleSetPopupState()
+    }
+    const handlePageChange = (route: string) => {
+        router.push(route)
+    }
+    const handleSetPopupState = () => {
+        setShowPopup((prev) => !prev)
+    }
 
     return (
         <div className={className} {...props}>
             <div
                 className={cn(
                     "flex flex-col items-start justify-center",
-                    "w-full h-fit px-5 py-3",
+                    "w-full h-fit px-5 py-3 z-200",
                     "bg-indigo-300"
                 )}
             >
                 <h2 className="text-lg font-semibold leading-6">{variables.shortform}</h2>
                 <h3 className="text-xs font-medium">{variables.longform}</h3>
             </div>
+            {notificationState.show && (
+                <Notification
+                    className={cn("py-3 px-5 w-fit h-fit")}
+                    onClose={setVisibilityState}
+                    title={notificationState.title}
+                    type={notificationState.type}
+                    description={notificationState.description}
+                />
+            )}
+            {showPopup && (
+                <FloatingContainer className="w-full h-full z-150">
+                    <InfoPopup
+                        className="max-w-80 w-full p-5 gap-4"
+                        title="PERINGATAN"
+                        description="Apakah Anda yakin ingin keluar? Pastikan seluruh perubahan telah Anda simpan."
+                        dismissTitle="Batal"
+                        acceptTitle="Keluar"
+                        onDismiss={handleSetPopupState}
+                        onAccept={handleLogout}
+                        onClose={handleSetPopupState}
+                    />
+                </FloatingContainer>
+            )}
             <div
                 className={cn(
                     "w-full flex-1",
@@ -54,82 +120,15 @@ export default function Dashboard({ children, className, ...props }: DashboardPr
                                 "relative pointer-events-auto"
                             )}
                         >
-                            <div
-                                className={cn(
-                                    "w-52 h-full max-w-screen flex flex-col overflow-hidden",
-                                    openSidebar ? "max-w-52" : "max-w-0",
-                                    "bg-indigo-100 border-r-2 border-indigo-200",
-                                    "transition-[max-width] ease-out duration-200",
-                                    "pointer-events-auto"
-                                )}
-                            >
-                                <span
-                                    className={cn(
-                                        "flex items-center justify-center",
-                                        "gap-2 mx-4 my-2 py-2 overflow-hidden"
-                                    )}
-                                >
-                                    <h2 className="font-semibold flex-1 min-w-fit">Menu</h2>
-                                    <SidebarClose
-                                        strokeWidth={2}
-                                        className="size-5 text-indigo-500 cursor-pointer shrink-0"
-                                        onClick={() => setOpenSidebar((prev) => !prev)}
-                                    />
-                                </span>
-                                <span
-                                    className={cn(
-                                        "flex flex-col overflow-y-auto",
-                                        "w-full flex-1 px-2"
-                                    )}
-                                >
-                                    {variables.paths.map((button, index) => {
-                                        const SpecificComponent =
-                                            ComponentRegistry[
-                                                button.icon as keyof typeof ComponentRegistry
-                                            ]
-
-                                        return (
-                                            <DashboardSidebarButton
-                                                key={index}
-                                                onClick={() => router.push(button.route)}
-                                                className={cn(
-                                                    "w-full h-10 gap-2 px-3",
-                                                    path === button.route && "bg-indigo-300"
-                                                )}
-                                                icon={
-                                                    <SpecificComponent
-                                                        strokeWidth={2}
-                                                        className="size-4 shrink-0"
-                                                    />
-                                                }
-                                                color="black"
-                                                title={button.name}
-                                            />
-                                        )
-                                    })}
-                                </span>
-                                <span
-                                    className={cn(
-                                        "flex flex-col items-start justify-center",
-                                        "w-full h-fit px-2 my-2",
-                                        "overflow-hidden"
-                                    )}
-                                >
-                                    <DashboardSidebarButton
-                                        className="w-full h-10 gap-2 px-3"
-                                        icon={<CircleUserRound className="size-4 shrink-0" />}
-                                        color="black"
-                                        title="Admin"
-                                    />
-                                    <DashboardSidebarButton
-                                        onClick={() => router.push("/")}
-                                        className="w-full h-10 gap-2 px-3"
-                                        icon={<LogOut className="size-4 shrink-0" />}
-                                        color="var(--color-red-500)"
-                                        title="Keluar"
-                                    />
-                                </span>
-                            </div>
+                            <Sidebar
+                                className="w-52 h-full max-w-screen"
+                                open={openSidebar}
+                                path={path}
+                                data={userData}
+                                onPageChange={(route) => handlePageChange(route)}
+                                onLogOut={handleShowInfoLogout}
+                                onClose={handleSetSidebarState}
+                            />
                             {!openSidebar && (
                                 <div
                                     className={cn(
@@ -146,7 +145,7 @@ export default function Dashboard({ children, className, ...props }: DashboardPr
                                             "transition-[max-width,padding] ease-out duration-200",
                                             "bg-indigo-400"
                                         )}
-                                        onClick={() => setOpenSidebar((prev) => !prev)}
+                                        onClick={handleSetSidebarState}
                                     >
                                         <SidebarOpen
                                             strokeWidth={2}
@@ -161,6 +160,7 @@ export default function Dashboard({ children, className, ...props }: DashboardPr
                             )}
                         </div>
                         <div
+                            onClick={handleSetSidebarState}
                             className={cn(
                                 openSidebar
                                     ? "opacity-50 pointer-events-auto"

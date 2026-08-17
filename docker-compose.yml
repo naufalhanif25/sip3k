@@ -1,0 +1,34 @@
+services:
+    sip3k-app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: sip3k_app
+        restart: always
+        ports:
+            - "3000:3000"
+        env_file:
+            - .env
+        environment:
+            - NODE_ENV=production
+            - TZ=Asia/Jakarta
+        volumes:
+            - ./data:/app/data
+            - ./logs:/app/logs
+    sip3k-cron:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: sip3k_cron
+        restart: always
+        command: ["bun", "run", "dist/cron.js"]
+        env_file:
+            - .env
+        environment:
+            - NODE_ENV=production
+            - TZ=Asia/Jakarta
+        volumes:
+            - ./data:/app/data
+            - ./logs:/app/logs
+        depends_on:
+            - sip3k-app

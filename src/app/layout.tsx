@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { Roboto, Roboto_Mono } from "next/font/google"
 import { ReactNode } from "react"
-import "./globals.css"
-import variables from "./data/variables.json"
+import "@/app/globals.css"
+import variables from "@/app/data/variables.json"
 
 const robotoSans = Roboto({
     variable: "--font-roboto-sans",

@@ -4,67 +4,59 @@
     "longform": "Sistem Persuratan dan Penjadwalan Piket Kejaksaan",
     "copyright": "Hak Cipta © 2026 SIP3K. Semua Hak Dilindungi Undang-Undang.",
     "description": "Sistem Persuratan dan Penjadwalan Piket Kejaksaan (SIP3K) Negeri Banda Aceh",
+    "divisions": ["Intel", "Pembinaan", "Pidum", "Pidsus", "PAPBB", "Datun"],
+    "budgetclass": {
+        "Intel": [
+            "1102.AEG.058",
+            "1102.BHB.051",
+            "1102.BHB.053",
+            "1102.FAE.054",
+            "1103.BAA.055",
+            "1103.QMB.051"
+        ],
+        "Pembinaan": ["1090.EBA.994"],
+        "Pidum": ["6582.BEC.M51", "6582.BEC.M52", "6582.BEC.M53", "6582.BEC.M54"],
+        "Pidsus": ["6582.BCE.U10", "6582.BCE.U14", "6582.BCE.U23", "6582.BCE.U90", "6582.BCE.U99"],
+        "PAPBB": ["6582.BCE.074"],
+        "Datun": ["6582.BAA.K47", "6582.BAB.K50", "6582.BEC.K51", "6582.BEC.K52"]
+    },
+    "budgetprefix": {
+        "Intel": "BF",
+        "Pembinaan": "WA",
+        "Pidum": "BF",
+        "Pidsus": "BF",
+        "PAPBB": "BF",
+        "Datun": "BF"
+    },
+    "supervisor": [
+        "Kasubbagbin",
+        "Kasi Intel",
+        "Kasi Pidum",
+        "Kasi Pidsus",
+        "Kasi Datun",
+        "Kasi PAPBB"
+    ],
+    "category": ["II/a", "II/b", "II/c", "II/d", "III/a", "III/b", "III/c", "III/d"],
+    "sptjbcode": [""],
     "paths": [
         {
-            "name": "Daftar Templat",
+            "name": "Dokumen SPTJB",
             "icon": "FileText",
-            "route": "/dashboard/templates",
-            "description": "Daftar template Excel yang tersedia"
-        },
-        {
-            "name": "Dokumen Saya",
-            "icon": "FileStack",
-            "route": "/dashboard/docs",
-            "description": "Daftar dokumen saya yang tersedia"
+            "route": "/dashboard/sptjb",
+            "description": "Buat dan kelola dokumen Surat Pernyataan Tanggung Jawab Belanja (SPTJB) dengan mudah dan cepat."
         },
         {
             "name": "Jadwal Piket",
             "icon": "ClipboardClock",
             "route": "/dashboard/picket",
-            "description": "Pengaturan dan penjadwalan jadwal piket otomatis"
+            "description": "Atur jadwal piket dan kirim pemberitahuan piket ke nomor WhatsApp yang bersangkutan secara otomatis"
         }
     ],
-    "picket": {
-        "tableHeaders": ["No.", "Nama", "NIP", "NRP", "No. HP", "Jadwal Piket"],
-        "todaySectionTitle": "Piket Hari Ini",
-        "todaySectionDescription": "Daftar nama yang melaksanakan piket hari ini.",
-        "listSectionTitle": "Daftar Pegawai",
-        "listSectionDescription": "Daftar nama beserta informasi terkait pegawai semua golongan."
+    "gender": ["Laki-laki", "Perempuan"],
+    "gendermap": {
+        "L": 0,
+        "P": 1
     },
-    "dropdown": {
-        "templates": [
-            {
-                "name": "Gunakan",
-                "icon": "SquarePen",
-                "color": "black"
-            },
-            {
-                "name": "Pratinjau",
-                "icon": "ZoomIn",
-                "color": "black"
-            },
-            {
-                "name": "Hapus",
-                "icon": "Trash",
-                "color": "var(--color-red-500)"
-            }
-        ],
-        "docs": [
-            {
-                "name": "Simpan",
-                "icon": "Save",
-                "color": "black"
-            },
-            {
-                "name": "Edit",
-                "icon": "SquarePen",
-                "color": "black"
-            },
-            {
-                "name": "Hapus",
-                "icon": "Trash",
-                "color": "var(--color-red-500)"
-            }
-        ]
-    }
+    "class": ["I", "II", "III", "IV"],
+    "room": ["a", "b", "c", "d"]
 }

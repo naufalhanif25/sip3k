@@ -1,7 +1,7 @@
 "use client"
 
-import { cn } from "@/app/lib/cn"
-import { DashboardSidebarButtonProps } from "@/app/props/dashboard"
+import { cn } from "@/app/lib/global-utils"
+import { type DashboardSidebarButtonProps } from "@/app/props/dashboard"
 
 export default function DashboardSidebarButton({
     title,

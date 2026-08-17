@@ -1,9 +1,10 @@
 "use client"
 
-import { cn } from "@/app/lib/cn"
+import { cn } from "@/app/lib/global-utils"
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
-import { HomeInputProps } from "../props/component"
+import { type InputProps } from "@/app/props/component"
+import { useFocus } from "@/app/hooks/component"
 
 export default function Input({
     title,
@@ -11,14 +12,16 @@ export default function Input({
     onChange,
     type,
     className,
+    pattern,
     ...props
-}: HomeInputProps) {
+}: InputProps) {
     const [showPassword, setShowPassword] = useState<boolean>(false)
-    const [isFocus, setIsFocus] = useState<boolean>(false)
+    const handleSetPasswordState = () => setShowPassword((prev) => !prev)
+    const { isFocus, handleFocus, handleUnfocus } = useFocus()
 
     return (
         <span className="flex flex-col gap-1 w-full h-fit">
-            <h3 className={cn("text-sm font-medium text-black/75")}>{title}</h3>
+            {title && <h3 className={cn("text-sm font-medium text-black/75")}>{title}</h3>}
             <span
                 className={cn(
                     className,
@@ -28,18 +31,38 @@ export default function Input({
                     "overflow-hidden"
                 )}
             >
+                {type === "currency" && (
+                    <span
+                        onClick={handleSetPasswordState}
+                        className={cn(
+                            "h-full aspect-square cursor-pointer shrink-0",
+                            "flex items-center justify-center overflow-hidden"
+                        )}
+                    >
+                        <h6 className="text-sm">Rp</h6>
+                    </span>
+                )}
                 <input
-                    onChange={onChange}
-                    onFocus={() => setIsFocus(true)}
-                    onBlur={() => setIsFocus(false)}
-                    type={type === "password" && !showPassword ? type : "text"}
+                    onChange={(event) => onChange && onChange(event)}
+                    onFocus={handleFocus}
+                    onBlur={handleUnfocus}
+                    type={
+                        type === "password"
+                            ? !showPassword
+                                ? type
+                                : "text"
+                            : type === "currency"
+                              ? "text"
+                              : type
+                    }
+                    pattern={type === "currency" ? "^\\d{1,3}(\\.\\d{3})*$" : pattern}
                     className="h-full flex-1 outline-none"
                     placeholder={placeholder}
                     {...props}
                 />
                 {type === "password" && (
                     <span
-                        onClick={() => setShowPassword((prev) => !prev)}
+                        onClick={handleSetPasswordState}
                         className={cn(
                             "h-full aspect-square p-1.5 cursor-pointer",
                             "flex items-center justify-center overflow-hidden"
