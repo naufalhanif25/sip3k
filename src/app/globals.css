@@ -23,6 +23,29 @@
     background: var(--color-indigo-500);
 }
 
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    [ref],
+    .break-after-page,
+    .break-after-page * {
+        visibility: visible;
+    }
+
+    .break-after-page {
+        page-break-after: always;
+        break-after: page;
+        zoom: 100% !important;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 10mm;
+    }
+}
+
 @theme inline {
     --breakpoint-xs: 26rem;
     --color-background: var(--background);
