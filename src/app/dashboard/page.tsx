@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import variables from "../data/variables.json"
+import variables from "@/app/data/variables.json"
 
 export default function Dashboard() {
     const router = useRouter()
