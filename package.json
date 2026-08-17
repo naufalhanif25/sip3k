@@ -9,7 +9,7 @@
         "lint": "eslint",
         "cron": "bun run src/app/jobs/cron-picket.ts",
         "db:seed": "bun run data/seed.ts",
-        "logs:clean" : "rm -rf logs/*"
+        "logs:clean": "rm -rf logs/*"
     },
     "dependencies": {
         "bcrypt-ts": "^9.0.1",
