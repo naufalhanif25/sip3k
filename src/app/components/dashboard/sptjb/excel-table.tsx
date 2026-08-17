@@ -1,17 +1,17 @@
 "use client"
 
-import { cn } from "@/app/lib/cn"
+import { cn } from "@/app/lib/global-utils"
 import type { Property } from "csstype"
-import { ExcelTableProps } from "@/app/props/dashboard"
+import { type ExcelTableProps } from "@/app/props/sptjb"
 import { CSSProperties } from "react"
-import { ValueType } from "exceljs"
+import { TEMPLATE_BOUND } from "@/app/vars/global-vars"
 
 export default function ExcelTable({ data, merges, className, ...props }: ExcelTableProps) {
-    const columnsToRender = data.data.columns.slice(0, 9)
-    const rowsToRender = data.data.rows.slice(0, 36)
+    const columnsToRender = data.data.columns.slice(0, TEMPLATE_BOUND.column)
+    const rowsToRender = data.data.rows.slice(0, TEMPLATE_BOUND.row)
 
     return (
-        <table className={cn(className, "border-collapse table-fixed overflow-hidden")} {...props}>
+        <table className={cn(className, "border-collapse table-fixed")} {...props}>
             <colgroup>
                 {columnsToRender.map((col, index) => {
                     return (
@@ -26,8 +26,16 @@ export default function ExcelTable({ data, merges, className, ...props }: ExcelT
             </colgroup>
             <tbody>
                 {rowsToRender.map((row, rowIndex) => {
+                    const hasWrapText = row.some((cell) => cell?.alignment?.wrapText)
+
                     return (
-                        <tr key={rowIndex} className="text-xs h-6 w-full overflow-hidden">
+                        <tr
+                            key={rowIndex}
+                            className={cn(
+                                "text-xs w-full overflow-hidden",
+                                hasWrapText ? "h-auto" : "h-6"
+                            )}
+                        >
                             {row.map((cell, colIndex) => {
                                 const cellKey = `${rowIndex}-${colIndex}`
                                 if (merges.hiddenCells.has(cellKey)) {
@@ -35,6 +43,7 @@ export default function ExcelTable({ data, merges, className, ...props }: ExcelT
                                 }
                                 const mergeInfo = merges.mergeMap.get(cellKey)
                                 const rawHorizontal = cell?.alignment?.horizontal
+                                const isTextWrap = cell?.alignment?.wrapText
                                 const fontFamily: Property.FontFamily = cell.font.name as string
                                 const fontSize: Property.FontSize = `${cell.font.size}pt`
                                 const textAlign: Property.TextAlign =
@@ -52,16 +61,16 @@ export default function ExcelTable({ data, merges, className, ...props }: ExcelT
                                 const borderStyle: CSSProperties = {
                                     borderLeft: cell.border?.left
                                         ? "2px solid var(--color-black)"
-                                        : "1px solid var(--color-gray-300)",
+                                        : "none",
                                     borderRight: cell.border?.right
                                         ? "2px solid var(--color-black)"
-                                        : "1px solid var(--color-gray-300)",
+                                        : "none",
                                     borderTop: cell.border?.top
                                         ? "2px solid var(--color-black)"
-                                        : "1px solid var(--color-gray-300)",
+                                        : "none",
                                     borderBottom: cell.border?.bottom
                                         ? "2px solid var(--color-black)"
-                                        : "1px solid var(--color-gray-300)",
+                                        : "none",
                                 }
 
                                 return (
@@ -69,16 +78,20 @@ export default function ExcelTable({ data, merges, className, ...props }: ExcelT
                                         key={colIndex}
                                         rowSpan={mergeInfo?.rowSpan || 1}
                                         colSpan={mergeInfo?.colSpan || 1}
-                                        className="relative overflow-visible"
+                                        className={cn(
+                                            "relative",
+                                            isTextWrap ? "overflow-hidden" : "overflow-visible"
+                                        )}
                                         style={{
                                             ...borderStyle,
                                         }}
                                     >
                                         <div
                                             className={cn(
-                                                "absolute left-0 bottom-0 h-full z-10",
-                                                "whitespace-pre flex items-center",
-                                                "min-w-fit w-full"
+                                                "z-10 flex items-center w-full",
+                                                isTextWrap
+                                                    ? "relative whitespace-pre-wrap wrap-break-word min-h-6 h-auto overflow-hidden"
+                                                    : "absolute inset-0 h-full whitespace-pre overflow-visible min-w-full"
                                             )}
                                             style={{
                                                 fontFamily: fontFamily,
@@ -89,7 +102,6 @@ export default function ExcelTable({ data, merges, className, ...props }: ExcelT
                                                 fontWeight: isBold ? "bold" : "normal",
                                             }}
                                         >
-                                            {cell.type === ValueType.Formula && "Rp"}{" "}
                                             {formattedValue}
                                         </div>
                                     </td>

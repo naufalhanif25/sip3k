@@ -1,23 +1,23 @@
 "use client"
 
-import { cn } from "@/app/lib/cn"
-import Dropdown from "../../dropdown"
-import TextArea from "../../textarea"
-import Input from "../../input"
-import { AdditionalFormProps } from "@/app/props/dashboard"
-import variables from "../../../data/variables.json"
-import Button from "../../button"
-import DayPickerInput from "../../day-picker-input"
+import { cn } from "@/app/lib/global-utils"
+import TextArea from "@/app/components/textarea"
+import Input from "@/app/components/input"
+import { type AdditionalFormProps } from "@/app/props/sptjb"
+import Button from "@/app/components/button"
+import DayPickerInput from "@/app/components/day-picker-input"
 import { Trash } from "lucide-react"
+import { currencyFormatter } from "@/app/lib/sptjb-utils-handler"
 
 export default function AdditionalForm({
     data,
     title,
     onDelete,
-    onChoose,
+    onCodeChange,
     onNameChange,
     onDescChange,
     onDateChange,
+    onIDChange,
     onTotalChange,
     onPPNChange,
     onPPhChange,
@@ -42,18 +42,18 @@ export default function AdditionalForm({
                 )}
             >
                 <h6 className="text-sm font-semibold max-w-full truncate">{title}</h6>
-                <Button onClick={onDelete} className="aspect-square h-8 w-fit text-sm">
+                <Button onClick={() => onDelete && onDelete()} className="aspect-square h-8 w-fit text-sm">
                     <Trash className="size-4 shrink-0" />
                 </Button>
             </span>
             <span className={cn("w-full h-fit gap-2", "flex flex-col items-start justify-center")}>
-                <Dropdown
-                    className="w-full shrink-0 h-fit gap-2"
-                    title="Kode SPTJB"
-                    placeholder="Pilih Kode SPTJB"
-                    options={variables.divisions.sort()}
+                <Input
+                    title="Kode Akun"
+                    type="text"
                     value={data.code}
-                    onChoose={onChoose}
+                    onChange={onCodeChange}
+                    className="w-full min-w-0 sm:flex-1 min-h-10 text-sm shrink-0"
+                    placeholder="Kode Akun"
                 />
                 <Input
                     title="Nama Penerima"
@@ -77,9 +77,17 @@ export default function AdditionalForm({
                     className="w-full min-w-0 sm:flex-1 min-h-10 text-sm shrink-0"
                 />
                 <Input
+                    title="Nomor Bukti"
+                    type="text"
+                    value={data.id}
+                    onChange={onIDChange}
+                    className="w-full min-w-0 sm:flex-1 min-h-10 text-sm shrink-0"
+                    placeholder="Nomor Bukti"
+                />
+                <Input
                     title="Jumlah"
                     type="currency"
-                    value={data.total}
+                    value={currencyFormatter.format(data.total)}
                     onChange={onTotalChange}
                     className="w-full min-w-0 sm:flex-1 min-h-10 text-sm shrink-0"
                     placeholder="Jumlah"
@@ -87,7 +95,7 @@ export default function AdditionalForm({
                 <Input
                     title="PPN"
                     type="currency"
-                    value={data.ppn}
+                    value={currencyFormatter.format(data.ppn)}
                     onChange={onPPNChange}
                     className="w-full min-w-0 sm:flex-1 min-h-10 text-sm shrink-0"
                     placeholder="PPN"
@@ -95,7 +103,7 @@ export default function AdditionalForm({
                 <Input
                     title="PPh"
                     type="currency"
-                    value={data.pph}
+                    value={currencyFormatter.format(data.pph)}
                     onChange={onPPhChange}
                     className="w-full min-w-0 sm:flex-1 min-h-10 text-sm shrink-0"
                     placeholder="PPh"
