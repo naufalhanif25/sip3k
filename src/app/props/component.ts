@@ -1,5 +1,6 @@
 import { FileText, ClipboardClock } from "lucide-react"
 import { HTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes } from "react"
+import { dateTZ } from "@/app/lib/date-timezone"
 import * as z from "zod"
 
 export interface CheckBoxProps extends HTMLAttributes<HTMLSpanElement> {
@@ -8,17 +9,18 @@ export interface CheckBoxProps extends HTMLAttributes<HTMLSpanElement> {
 }
 
 export interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-    title: string
+    title?: string
 }
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-    title: string
+    title?: string
 }
 
 export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
     onChoose?: (value: string) => void
     title: string
     placeholder: string
+    active?: boolean
     options: string[]
     value?: string | null
 }
@@ -32,21 +34,6 @@ export interface TableHeadProps extends HTMLAttributes<HTMLTableSectionElement> 
     names: string[]
 }
 
-export type Division = "Intel" | "Pembinaan" | "Pidum" | "Pidsus" | "PAPBB" | "Datun"
-
-export interface DocumentInitProps {
-    name: string
-    division: Division | null
-}
-
-export const DocumentInit = z.object({
-    name: z.string().default(""),
-    division: z
-        .enum(["Intel", "Pembinaan", "Pidum", "Pidsus", "PAPBB", "Datun"])
-        .nullable()
-        .default(null),
-})
-
 export type NotificationType = "error" | "warning" | "notification"
 
 export interface NotificationProps extends HTMLAttributes<HTMLSpanElement> {
@@ -56,14 +43,14 @@ export interface NotificationProps extends HTMLAttributes<HTMLSpanElement> {
     onClose?: () => void
 }
 
-export interface PopupStateProps {
+export interface NotificationStateProps {
     show: boolean
     title: string
     description: string
     type: NotificationType
 }
 
-export const PopupState = z.object({
+export const NotificationState = z.object({
     show: z.boolean().default(false),
     title: z.string().default(""),
     description: z.string().default(""),
@@ -92,24 +79,39 @@ export const InfoPopupState = z.object({
 export type InfoPopupDataProps = z.infer<typeof InfoPopupData>
 export type InfoPopupStateProps = z.infer<typeof InfoPopupState>
 
-export type WeekdayFormat = "narrow" | "short" | "long"
-
-export interface CalendarDayProps {
-    date: Date
-    dayNumber: number
-    isCurrentMonth: boolean
-    isToday: boolean
-}
-
 export const CalendarDay = z.object({
-    date: z.date().default(new Date()),
+    date: z.coerce.date().default(() => dateTZ.nowDate()),
     dayNumber: z.number().default(1),
     isCurrentMonth: z.boolean().default(false),
     isToday: z.boolean().default(false),
 })
 
+export type CalendarDayProps = z.infer<typeof CalendarDay>
+
 export interface DayPickerProps extends Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> {
     defaultDate?: Date
     selected: Date
     onSelect?: (date: Date) => void
+}
+
+export interface DayPickerInputProps extends Omit<HTMLAttributes<HTMLSpanElement>, "onChange"> {
+    title: string
+    value: Date
+    onChange?: (date: Date) => void
+}
+
+export interface SearchBarProps extends HTMLAttributes<HTMLSpanElement> {
+    onSearch?: (value: string) => void
+}
+
+export interface PaginationProps extends HTMLAttributes<HTMLDivElement> {
+    currentPage: number
+    totalPages: number
+    onPrevPage?: () => void
+    onNextPage?: () => void
+}
+
+export interface TableTopHeaderProps extends HTMLAttributes<HTMLDivElement>, PaginationProps {
+    title: string
+    onSearch?: (value: string) => void
 }
