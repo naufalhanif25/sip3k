@@ -1,17 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { jwtVerify } from "jose"
-import variables from "./app/data/variables.json"
-
-async function verifyJWT(token: string) {
-    try {
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
-        const { payload } = await jwtVerify(token, secret)
-
-        return payload
-    } catch {
-        return null
-    }
-}
+import variables from "@/app/data/variables.json"
+import { verifyJWT } from "@/app/lib/global-utils"
 
 export async function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl
@@ -23,17 +12,13 @@ export async function proxy(req: NextRequest) {
             const loginUrl = new URL("/", req.url)
             const response = NextResponse.redirect(loginUrl)
 
-            if (token) {
-                response.cookies.delete("token")
-            }
+            if (token) response.cookies.delete("token")
             return response
         }
         return NextResponse.next()
     }
     if (isValidToken) {
-        if (pathname === "/") {
-            return NextResponse.redirect(new URL(variables.paths[0].route, req.url))
-        } else if (pathname === "/dashboard") {
+        if (pathname === "/" || pathname === "/dashboard") {
             return NextResponse.redirect(new URL(variables.paths[0].route, req.url))
         }
     }
