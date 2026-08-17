@@ -1,0 +1,34 @@
+FROM oven/bun:1-alpine AS builder
+WORKDIR /app
+
+COPY package.json bun.lock ./
+
+RUN bun install --frozen-lockfile
+
+COPY . .
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN bun run build
+
+RUN bun build src/app/jobs/cron-picket.ts --outfile dist/cron.js --target bun
+RUN bun build data/seed.ts --outfile dist/seed.js --target bun
+
+FROM oven/bun:1-alpine AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV TZ=Asia/Jakarta
+ENV NEXT_TELEMETRY_DISABLED=1
+
+COPY --from=builder /app/public ./public
+
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+COPY --from=builder /app/dist ./dist
+
+EXPOSE 3000
+
+CMD ["bun", "run", "server.js"]

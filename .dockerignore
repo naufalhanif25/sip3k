@@ -1,0 +1,19 @@
+# node & next.js build artifacts
+node_modules
+.next
+out
+build
+
+# environment & local secrets
+.env
+.env*.local
+
+# git & logs
+.git
+.gitignore
+logs/*.log
+
+# project specific documentation / llm guidelines
+AGENTS.md
+CLAUDE.md
+README.md
