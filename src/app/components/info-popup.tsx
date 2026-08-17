@@ -1,8 +1,8 @@
 "use client"
 
-import { cn } from "../lib/cn"
-import Button from "./button"
-import { InfoPopupProps } from "../props/component"
+import { cn } from "@/app/lib/global-utils"
+import Button from "@/app/components/button"
+import { type InfoPopupProps } from "@/app/props/component"
 import { X } from "lucide-react"
 
 export default function InfoPopup({
@@ -47,10 +47,16 @@ export default function InfoPopup({
                 <p className="text-sm max-w-full line-clamp-5 text-center">{description}</p>
             </span>
             <span className={cn("w-full h-fit gap-2", "flex items-center justify-center")}>
-                <Button onClick={onDismiss} className="flex-1 px-3 py-1 h-10 gap-2 overflow-hidden">
+                <Button
+                    onClick={() => onDismiss && onDismiss()}
+                    className="flex-1 px-3 py-1 h-10 gap-2 overflow-hidden"
+                >
                     <p className="max-w-full truncate">{dismissTitle || "Abaikan"}</p>
                 </Button>
-                <Button onClick={onAccept} className="flex-1 px-3 py-1 h-10 gap-2 overflow-hidden">
+                <Button
+                    onClick={() => onAccept && onAccept()}
+                    className="flex-1 px-3 py-1 h-10 gap-2 overflow-hidden"
+                >
                     <p className="max-w-full truncate">{acceptTitle || "Setuju"}</p>
                 </Button>
             </span>

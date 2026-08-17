@@ -1,7 +1,7 @@
 "use client"
 
-import { cn } from "@/app/lib/cn"
-import { FormSectionProps } from "@/app/props/dashboard"
+import { cn } from "@/app/lib/global-utils"
+import { type FormSectionProps } from "@/app/props/sptjb"
 
 export default function FormSection({ title, className, children, ...props }: FormSectionProps) {
     return (

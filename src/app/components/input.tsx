@@ -1,9 +1,10 @@
 "use client"
 
-import { cn } from "@/app/lib/cn"
+import { cn } from "@/app/lib/global-utils"
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
-import { InputProps } from "../props/component"
+import { type InputProps } from "@/app/props/component"
+import { useFocus } from "@/app/hooks/component"
 
 export default function Input({
     title,
@@ -11,17 +12,16 @@ export default function Input({
     onChange,
     type,
     className,
+    pattern,
     ...props
 }: InputProps) {
     const [showPassword, setShowPassword] = useState<boolean>(false)
-    const [isFocus, setIsFocus] = useState<boolean>(false)
     const handleSetPasswordState = () => setShowPassword((prev) => !prev)
-    const handleFocus = () => setIsFocus(true)
-    const handleUnfocus = () => setIsFocus(false)
+    const { isFocus, handleFocus, handleUnfocus } = useFocus()
 
     return (
         <span className="flex flex-col gap-1 w-full h-fit">
-            <h3 className={cn("text-sm font-medium text-black/75")}>{title}</h3>
+            {title && <h3 className={cn("text-sm font-medium text-black/75")}>{title}</h3>}
             <span
                 className={cn(
                     className,
@@ -43,7 +43,7 @@ export default function Input({
                     </span>
                 )}
                 <input
-                    onChange={onChange}
+                    onChange={(event) => onChange && onChange(event)}
                     onFocus={handleFocus}
                     onBlur={handleUnfocus}
                     type={
@@ -55,7 +55,7 @@ export default function Input({
                               ? "text"
                               : type
                     }
-                    pattern={type === "currency" ? "[0-9]*" : "*"}
+                    pattern={type === "currency" ? "^\\d{1,3}(\\.\\d{3})*$" : pattern}
                     className="h-full flex-1 outline-none"
                     placeholder={placeholder}
                     {...props}

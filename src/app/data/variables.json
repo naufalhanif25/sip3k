@@ -5,6 +5,37 @@
     "copyright": "Hak Cipta © 2026 SIP3K. Semua Hak Dilindungi Undang-Undang.",
     "description": "Sistem Persuratan dan Penjadwalan Piket Kejaksaan (SIP3K) Negeri Banda Aceh",
     "divisions": ["Intel", "Pembinaan", "Pidum", "Pidsus", "PAPBB", "Datun"],
+    "budgetclass": {
+        "Intel": [
+            "1102.AEG.058",
+            "1102.BHB.051",
+            "1102.BHB.053",
+            "1102.FAE.054",
+            "1103.BAA.055",
+            "1103.QMB.051"
+        ],
+        "Pembinaan": ["1090.EBA.994"],
+        "Pidum": ["6582.BEC.M51", "6582.BEC.M52", "6582.BEC.M53", "6582.BEC.M54"],
+        "Pidsus": ["6582.BCE.U10", "6582.BCE.U14", "6582.BCE.U23", "6582.BCE.U90", "6582.BCE.U99"],
+        "PAPBB": ["6582.BCE.074"],
+        "Datun": ["6582.BAA.K47", "6582.BAB.K50", "6582.BEC.K51", "6582.BEC.K52"]
+    },
+    "budgetprefix": {
+        "Intel": "BF",
+        "Pembinaan": "WA",
+        "Pidum": "BF",
+        "Pidsus": "BF",
+        "PAPBB": "BF",
+        "Datun": "BF"
+    },
+    "supervisor": [
+        "Kasubbagbin",
+        "Kasi Intel",
+        "Kasi Pidum",
+        "Kasi Pidsus",
+        "Kasi Datun",
+        "Kasi PAPBB"
+    ],
     "category": ["II/a", "II/b", "II/c", "II/d", "III/a", "III/b", "III/c", "III/d"],
     "sptjbcode": [""],
     "paths": [
@@ -20,5 +51,12 @@
             "route": "/dashboard/picket",
             "description": "Atur jadwal piket dan kirim pemberitahuan piket ke nomor WhatsApp yang bersangkutan secara otomatis"
         }
-    ]
+    ],
+    "gender": ["Laki-laki", "Perempuan"],
+    "gendermap": {
+        "L": 0,
+        "P": 1
+    },
+    "class": ["I", "II", "III", "IV"],
+    "room": ["a", "b", "c", "d"]
 }

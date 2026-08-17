@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "./lib/cn"
+import { cn } from "@/app/lib/global-utils"
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 

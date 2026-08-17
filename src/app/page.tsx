@@ -1,104 +1,61 @@
 "use client"
 
 import { ChangeEvent, useState } from "react"
-import { cn } from "./lib/cn"
+import { cn } from "@/app/lib/global-utils"
 import { useRouter } from "next/navigation"
-import CheckBox from "./components/checkbox"
-import { UserLogin, UserLoginProps } from "./props/user"
-import Input from "./components/input"
-import Button from "./components/button"
+import CheckBox from "@/app/components/checkbox"
+import { type UserLoginProps } from "@/app/props/user"
+import Input from "@/app/components/input"
+import Button from "@/app/components/button"
 import { LogIn } from "lucide-react"
-import Notification from "./components/notification"
-import { PopupState, PopupStateProps } from "./props/component"
-import { BasicAPIResponseProps, BasicAPIResponse } from "./props/api"
-import variables from "./data/variables.json"
+import Notification from "@/app/components/notification"
+import variables from "@/app/data/variables.json"
+import { POPUP_DATA_DEFAULT, USER_LOGIN_DATA_DEFAULT } from "@/app/vars/global-vars"
+import { handleUserLogin } from "@/app/lib/user-fetch-handler"
+import { useNotification } from "@/app/hooks/dashboard"
+import * as UserHandler from "@/app/lib/user-handler"
 
 export default function Home() {
     const router = useRouter()
-    const [popupState, setPopupState] = useState<PopupStateProps>(
-        PopupState.parse({
-            show: false,
-            title: "",
-            description: "",
-            type: "notification",
-        })
-    )
-    const [userLogin, setUserLogin] = useState<UserLoginProps>(
-        UserLogin.parse({
-            username: "",
-            password: "",
-            isRemember: false,
-        })
-    )
+    const [userLogin, setUserLogin] = useState<UserLoginProps>(USER_LOGIN_DATA_DEFAULT)
     const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false)
-    const handleSubmit = async () => {
+    const { notificationState, setVisibilityState, showNotification } =
+        useNotification(POPUP_DATA_DEFAULT)
+    const handleLogin = async () => {
         if (!userLogin.username || !userLogin.password) {
-            if (popupState.show) handleSetNotificationState()
-            setTimeout(() => {
-                setPopupState(
-                    PopupState.parse({
-                        show: true,
-                        title: "Gagal Masuk",
-                        description: "Nama pengguna atau kata sandi tidak boleh kosong.",
-                        type: "error",
-                    })
-                )
-            }, 1)
+            showNotification(
+                "Gagal Masuk",
+                "Nama pengguna atau kata sandi tidak boleh kosong.",
+                "error"
+            )
             return
         }
         setIsLoggingIn(true)
 
         try {
-            const res = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            await handleUserLogin(
+                userLogin,
+                (data) => {
+                    localStorage.setItem("user", JSON.stringify(data.data))
+                    router.push("/dashboard")
                 },
-                body: JSON.stringify(userLogin),
-            })
-            const data = BasicAPIResponse.parse(await res.json())
-
-            if (!res.ok || !data.success) {
-                throw new Error(data.message || "Pastikan nama pengguna dan kata sandi benar.")
-            }
-            router.push("/dashboard")
+                (message) => showNotification("Gagal Masuk", message, "error")
+            )
         } catch (err) {
-            if (popupState.show) handleSetNotificationState()
-            setTimeout(() => {
-                setPopupState(
-                    PopupState.parse({
-                        show: true,
-                        title: "Gagal Masuk",
-                        description:
-                            (err as BasicAPIResponseProps).message || "Terjadi kesalahan koneksi.",
-                        type: "error",
-                    })
-                )
-            }, 1)
+            showNotification(
+                "Gagal Masuk",
+                (err as string) || "Terjadi kesalahan koneksi.",
+                "error"
+            )
         } finally {
             setIsLoggingIn(false)
         }
     }
-    const handleSetNotificationState = () =>
-        setPopupState((prev) => ({
-            ...prev,
-            show: !prev.show,
-        }))
-    const handleUsernameChange = (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) =>
-        setUserLogin((prev) => ({
-            ...prev,
-            username: e.target.value,
-        }))
-    const handlePasswordChange = (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) =>
-        setUserLogin((prev) => ({
-            ...prev,
-            password: e.target.value,
-        }))
-    const handleIsRememberChange = () =>
-        setUserLogin((prev) => ({
-            ...prev,
-            isRemember: !prev.isRemember,
-        }))
+    const handleUsernameChange = (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) =>
+        UserHandler.handleChangeUsername(setUserLogin, event)
+    const handlePasswordChange = (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) =>
+        UserHandler.handleChangePassword(setUserLogin, event)
+    const handleIsRememberChange = () => UserHandler.handleChangeIsRemember(setUserLogin)
 
     return (
         <div
@@ -108,13 +65,13 @@ export default function Home() {
                 "overflow-x-auto relative"
             )}
         >
-            {popupState.show && (
+            {notificationState.show && (
                 <Notification
                     className={cn("py-3 px-5 w-fit h-fit")}
-                    onClose={handleSetNotificationState}
-                    title={popupState.title}
-                    type={popupState.type}
-                    description={popupState.description}
+                    onClose={setVisibilityState}
+                    title={notificationState.title}
+                    type={notificationState.type}
+                    description={notificationState.description}
                 />
             )}
             <div
@@ -140,7 +97,7 @@ export default function Home() {
                 <span className={cn("w-full flex-1 gap-3", "flex flex-col")}>
                     <Input
                         title="Nama Pengguna"
-                        onChange={(e) => handleUsernameChange(e)}
+                        onChange={(event) => handleUsernameChange(event)}
                         value={userLogin.username}
                         type="text"
                         placeholder="Nama pengguna"
@@ -149,7 +106,7 @@ export default function Home() {
                     <span className="flex w-full h-fit gap-1">
                         <Input
                             title="Kata Sandi"
-                            onChange={(e) => handlePasswordChange(e)}
+                            onChange={(event) => handlePasswordChange(event)}
                             value={userLogin.password}
                             type="password"
                             placeholder="Kata sandi"
@@ -165,7 +122,7 @@ export default function Home() {
                 </span>
                 <Button
                     disabled={isLoggingIn}
-                    onClick={handleSubmit}
+                    onClick={handleLogin}
                     className={cn(
                         "px-3 py-1 max-w-32 w-full h-10",
                         "disabled:pointer-events-none disabled:select-none",

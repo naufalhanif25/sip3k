@@ -1,7 +1,7 @@
 "use client"
 
-import { cn } from "@/app/lib/cn"
-import { RoundButtonProps } from "@/app/props/dashboard"
+import { cn } from "@/app/lib/global-utils"
+import { type RoundButtonProps } from "@/app/props/dashboard"
 
 export default function RoundButton({ icon, className, ...props }: RoundButtonProps) {
     return (

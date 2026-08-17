@@ -1,15 +1,11 @@
 "use client"
 
-import { cn } from "../lib/cn"
-import { useState, HTMLAttributes } from "react"
-import DayPicker from "./day-picker"
+import { cn } from "@/app/lib/global-utils"
+import { useState } from "react"
+import { type DayPickerInputProps } from "@/app/props/component"
+import DayPicker from "@/app/components/day-picker"
 import { Calendar } from "lucide-react"
-
-export interface DayPickerInputProps extends Omit<HTMLAttributes<HTMLSpanElement>, "onChange"> {
-    title: string
-    value: Date
-    onChange?: (date: Date) => void
-}
+import { dateFormatter } from "@/app/lib/global-utils"
 
 export default function DayPickerInput({
     title,
@@ -28,7 +24,7 @@ export default function DayPickerInput({
                     defaultDate={value}
                     selected={value}
                     onSelect={(date) => {
-                        onChange!(date)
+                        if (onChange) onChange(date)
                         setShowCalendar((prev) => !prev)
                     }}
                 />
@@ -55,7 +51,9 @@ export default function DayPickerInput({
                         )}
                         {...props}
                     >
-                        <p className="max-w-full truncate">{value.toLocaleDateString("id-ID")}</p>
+                        <p className="max-w-full truncate">
+                            {dateFormatter.defultFormat.format(value)}
+                        </p>
                         <Calendar className="size-4 shrink-0" />
                     </span>
                 </span>

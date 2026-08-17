@@ -1,8 +1,8 @@
 "use client"
 
-import { cn } from "../lib/cn"
-import { useState } from "react"
-import { TextAreaProps } from "../props/component"
+import { cn } from "@/app/lib/global-utils"
+import { type TextAreaProps } from "@/app/props/component"
+import { useFocus } from "@/app/hooks/component"
 
 export default function TextArea({
     title,
@@ -11,11 +11,11 @@ export default function TextArea({
     placeholder,
     ...props
 }: TextAreaProps) {
-    const [isFocus, setIsFocus] = useState<boolean>(false)
+    const { isFocus, handleFocus, handleUnfocus } = useFocus()
 
     return (
         <span className="flex flex-col gap-1 w-full h-fit">
-            <h3 className={cn("text-sm font-medium text-black/75")}>{title}</h3>
+            {title && <h3 className={cn("text-sm font-medium text-black/75")}>{title}</h3>}
             <span
                 className={cn(
                     className,
@@ -26,9 +26,9 @@ export default function TextArea({
                 )}
             >
                 <textarea
-                    onChange={onChange}
-                    onFocus={() => setIsFocus(true)}
-                    onBlur={() => setIsFocus(false)}
+                    onChange={(event) => onChange && onChange(event)}
+                    onFocus={handleFocus}
+                    onBlur={handleUnfocus}
                     className="h-full flex-1 outline-none resize-none"
                     placeholder={placeholder}
                     {...props}

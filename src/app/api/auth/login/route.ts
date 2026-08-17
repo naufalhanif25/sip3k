@@ -1,21 +1,15 @@
 import { NextRequest, NextResponse } from "next/server"
 import * as bcrypt from "bcrypt-ts"
 import * as jwt from "jsonwebtoken"
+import { INVALID_BODY_RESPONSE, SERVER_ERROR_RESPONSE } from "@/app/vars/db-vars"
+import { writeLog } from "@/app/lib/logs-utils"
 
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json()
 
         if (!body || !body.username || !body.password) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "Data body tidak lengkap. Nama pengguna dan kata sandi wajib terisi.",
-                },
-                {
-                    status: 400,
-                }
-            )
+            return INVALID_BODY_RESPONSE
         }
         const validUsername = process.env.ADMIN_USERNAME!
         const hashedPassword = process.env.ADMIN_PASSWORD!
@@ -29,9 +23,7 @@ export async function POST(req: NextRequest) {
                     success: false,
                     message: "Nama pengguna atau kata sandi salah.",
                 },
-                {
-                    status: 401,
-                }
+                { status: 401 }
             )
         }
         const jwtToken = process.env.JWT_SECRET!
@@ -41,8 +33,10 @@ export async function POST(req: NextRequest) {
         const response = NextResponse.json({
             success: true,
             message: `Berhasil masuk sebagai ${username}.`,
+            data: {
+                username,
+            },
         })
-
         response.cookies.set("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -50,19 +44,10 @@ export async function POST(req: NextRequest) {
             maxAge: maxAgeInSeconds,
             path: "/",
         })
-
         return response
     } catch (err) {
         console.error(err)
-
-        return NextResponse.json(
-            {
-                success: false,
-                message: "Terjadi kesalahan internal server.",
-            },
-            {
-                status: 500,
-            }
-        )
+        await writeLog(err, "ERROR")
+        return SERVER_ERROR_RESPONSE
     }
 }
