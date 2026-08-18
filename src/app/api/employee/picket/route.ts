@@ -126,8 +126,8 @@ export async function PUT(req: NextRequest) {
                 { status: 404 }
             )
         }
-        const picketIndex = data.pickets.findIndex((value) => value.id === id)
-        if (picketIndex === -1) {
+        const groupIndex = data.pickets.findIndex((value) => value.id === id)
+        if (groupIndex === -1) {
             return NextResponse.json(
                 {
                     success: false,
@@ -136,7 +136,7 @@ export async function PUT(req: NextRequest) {
                 { status: 404 }
             )
         }
-        const scheduleIndex = data.pickets[picketIndex].pickets.findIndex(
+        const scheduleIndex = data.pickets[groupIndex].pickets.findIndex(
             (value) => value.id === body.id
         )
         if (scheduleIndex === -1) {
@@ -148,12 +148,73 @@ export async function PUT(req: NextRequest) {
                 { status: 404 }
             )
         }
-        db.data.pickets[picketIndex].pickets[scheduleIndex].employees = body.employees
+        db.data.pickets[groupIndex].pickets[scheduleIndex].employees = body.employees
         await db.write()
         return NextResponse.json({
             success: true,
             message: "Data jadwal piket berhasil diperbarui.",
         })
+    } catch (err) {
+        console.error(err)
+        await writeLog(err, "ERROR")
+        return SERVER_ERROR_RESPONSE
+    }
+}
+
+export async function DELETE(req: NextRequest) {
+    try {
+        const cookieStore = await cookies()
+        const token = cookieStore.get("token")?.value
+        const isValidToken = token ? await verifyJWT(token) : null
+
+        if (!isValidToken) {
+            return UNAUTHORIZED_RESPONSE
+        }
+        const { searchParams } = new URL(req.url)
+        const id = searchParams.get("id")
+        const picketId = searchParams.get("picketId")
+
+        if (!id || !picketId) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "ID piket tidak ditemuakan.",
+                },
+                { status: 400 }
+            )
+        }
+        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const data = DataBase.parse(db.data)
+        const groupIndex = data.pickets.findIndex((item) => item.id === id)
+        if (groupIndex === -1) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Kelompok piket tidak ditemukan.",
+                },
+                { status: 404 }
+            )
+        }
+        const targetGroup = db.data.pickets[groupIndex]
+        const initialCount = targetGroup.pickets.length
+        targetGroup.pickets = targetGroup.pickets.filter((picket) => picket.id !== picketId)
+        if (targetGroup.pickets.length === initialCount) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Jadwal piket tidak ditemukan.",
+                },
+                { status: 404 }
+            )
+        }
+        await db.write()
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Jadwal piket berhasil dihapus.",
+            },
+            { status: 200 }
+        )
     } catch (err) {
         console.error(err)
         await writeLog(err, "ERROR")
