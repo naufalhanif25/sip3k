@@ -19,6 +19,9 @@ export const fetchData = async (
 
         if (callback) callback(data)
     } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") {
+            return
+        }
         console.error(err)
     }
 }
@@ -78,6 +81,13 @@ export const dateFormatter = {
         year: "numeric",
     }),
     shortFormat: new Intl.DateTimeFormat("id-ID", {
+        month: "short",
+        year: "numeric",
+    }),
+    longWeekdayFormat: new Intl.DateTimeFormat("id-ID", {
+        weekday: "long",
+    }),
+    shortWeekdayFormat: new Intl.DateTimeFormat("id-ID", {
         weekday: "short",
     }),
     defultFormat: new Intl.DateTimeFormat("id-ID"),

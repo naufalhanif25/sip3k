@@ -13,7 +13,8 @@ import { fetchData } from "@/app/lib/global-utils"
 
 export const handleGetDocumentData = async (
     onSuccess: (message: string, data: SPTJBProps[]) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/document/sptjb",
@@ -21,6 +22,7 @@ export const handleGetDocumentData = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = DocumentGetResponse.parse(res)
@@ -34,7 +36,8 @@ export const handleGetDocumentData = async (
 
 export const handleGetTemplate = async (
     onSuccess: (data: TemplateGetResponseProps) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/document/template",
@@ -42,6 +45,7 @@ export const handleGetTemplate = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = TemplateGetResponse.parse(res)
@@ -56,7 +60,8 @@ export const handleUpdateDocument = async (
     inputData: DocumentInitProps,
     formData: FormInputProps[],
     onSuccess: (data: DocumentPostResponseProps) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         `/api/document/sptjb?id=${inputData.id}`,
@@ -72,6 +77,7 @@ export const handleUpdateDocument = async (
                 data: formData,
                 _class: inputData._class,
             }),
+            signal,
         },
         (res) => {
             const data = DocumentPostResponse.parse(res)
@@ -86,7 +92,8 @@ export const handleFreshSave = async (
     inputData: DocumentInitProps,
     formData: FormInputProps[],
     onSuccess: (data: DocumentPostResponseProps) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/document/sptjb",
@@ -102,6 +109,7 @@ export const handleFreshSave = async (
                 data: formData,
                 _class: inputData._class,
             }),
+            signal,
         },
         (res) => {
             const data = DocumentPostResponse.parse(res)
@@ -116,7 +124,8 @@ export const handleDeleteDocument = async (
     document: DocumentInitProps,
     id: string | undefined,
     onSuccess: (message: string) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         `/api/document/sptjb?id=${id || document.id}`,
@@ -125,6 +134,7 @@ export const handleDeleteDocument = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = BasicAPIResponse.parse(res)
@@ -138,7 +148,8 @@ export const handleDeleteDocument = async (
 export const handleDocumentGetOne = async (
     id: string,
     onSuccess: (message: string, data: SPTJBDetailProps) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         `/api/document/sptjb?id=${id}`,
@@ -146,6 +157,7 @@ export const handleDocumentGetOne = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = DocumentGetOneResponse.parse(res)

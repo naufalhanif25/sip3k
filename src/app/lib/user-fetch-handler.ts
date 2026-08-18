@@ -9,7 +9,8 @@ import { fetchData } from "@/app/lib/global-utils"
 export const handleUserLogin = async (
     userData: UserLoginProps,
     onSuccess: (data: UserLoginAPIResponseProps) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/auth/login",
@@ -19,6 +20,7 @@ export const handleUserLogin = async (
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(userData),
+            signal,
         },
         (res) => {
             const data = UserLoginAPIResponse.parse(res)
@@ -31,7 +33,8 @@ export const handleUserLogin = async (
 
 export const handleUserLogout = async (
     onSuccess: (message: string) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/auth/logout",
@@ -40,6 +43,7 @@ export const handleUserLogout = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = BasicAPIResponse.parse(res)

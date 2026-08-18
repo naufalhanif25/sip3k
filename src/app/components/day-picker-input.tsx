@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from "@/app/lib/global-utils"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { type DayPickerInputProps } from "@/app/props/component"
 import DayPicker from "@/app/components/day-picker"
 import { Calendar } from "lucide-react"
@@ -14,10 +14,23 @@ export default function DayPickerInput({
     className,
     ...props
 }: DayPickerInputProps) {
+    const dayPickerRef = useRef<HTMLSpanElement | null>(null)
     const [showCalendar, setShowCalendar] = useState<boolean>(false)
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dayPickerRef.current && !dayPickerRef.current.contains(event.target as Node)) {
+                setShowCalendar(false)
+            }
+        }
+        if (showCalendar) document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [showCalendar])
+
     return (
-        <span className="flex flex-col w-full h-fit relative">
+        <span ref={dayPickerRef} className="flex flex-col w-full h-fit relative">
             {showCalendar && (
                 <DayPicker
                     className="absolute w-fit h-fit p-5 left-0 bottom-12 gap-2 z-150"

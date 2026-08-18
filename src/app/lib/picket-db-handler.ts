@@ -47,9 +47,16 @@ export function generatePicketSchedule(data: DataBaseProps, force: boolean = fal
         (acc, batch) => acc + batch.pickets.length,
         0
     )
+    let activePicketDayCount = 0
+
     for (let day = 1; day <= daysInMonth; day++) {
-        const currentDate = nextMonth.date(day).startOf("day").toDate()
-        const globalDayIndex = totalPastDays + day - 1
+        const dateObj = nextMonth.date(day)
+        const dayOfWeek = dateObj.day()
+        if (dayOfWeek === 0 || dayOfWeek === 6) continue
+
+        const currentDate = dateObj.startOf("day").toDate()
+        const globalDayIndex = totalPastDays + activePicketDayCount
+        activePicketDayCount++
         const supervisorIndex = Math.floor(globalDayIndex / 5) % supervisors.length
         const currentSupervisor = supervisors[supervisorIndex]
         const eligibleClass3 = shuffleArray([...class3Employees]).sort((a, b) =>

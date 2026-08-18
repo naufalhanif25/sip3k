@@ -8,13 +8,14 @@ import { Fragment } from "react"
 import { MAX_ROW_PERPAGE } from "@/app/vars/global-vars"
 import { useSearch } from "@/app/hooks/component"
 import Button from "@/app/components/button"
-import { FileText, PenBox, Sheet, Sparkle } from "lucide-react"
+import { FileText, PenBox, Sheet, Sparkle, Trash } from "lucide-react"
 import { type PicketListProps } from "@/app/props/picket"
 import { dateFormatter } from "@/app/lib/global-utils"
 
 export default function PicketList({
     pickets,
     onSwapEmployee,
+    onDeletePicket,
     onGeneratePicket,
     onPrintSheet,
     onSaveSheet,
@@ -54,14 +55,24 @@ export default function PicketList({
                     )}
                 >
                     <Button
-                        onClick={() => onPrintSheet && onPrintSheet()}
-                        className="h-7 aspect-square w-fit text-sm"
+                        disabled={Boolean(!pickets)}
+                        onClick={() => pickets && onPrintSheet && onPrintSheet()}
+                        className={cn(
+                            "h-7 aspect-square w-fit text-sm",
+                            "disabled:pointer-events-none disabled:select-none",
+                            "disabled:bg-indigo-300"
+                        )}
                     >
                         <FileText className="size-4 shrink-0" />
                     </Button>
                     <Button
-                        onClick={() => onSaveSheet && onSaveSheet()}
-                        className="h-7 aspect-square w-fit text-sm"
+                        disabled={Boolean(!pickets)}
+                        onClick={() => pickets && onSaveSheet && onSaveSheet()}
+                        className={cn(
+                            "h-7 aspect-square w-fit text-sm",
+                            "disabled:pointer-events-none disabled:select-none",
+                            "disabled:bg-indigo-300"
+                        )}
                     >
                         <Sheet className="size-4 shrink-0" />
                     </Button>
@@ -76,8 +87,8 @@ export default function PicketList({
                             <col className="w-70" />
                             <col className="w-30" />
                             <col className="w-50" />
+                            <col className="w-60" />
                             <col className="w-50" />
-                            <col className="w-30" />
                         </colgroup>
                         <Table.TableHeader
                             names={["No.", "Nama", "NIP", "Golongan", "Pengawas", "Jadwal", "Aksi"]}
@@ -105,6 +116,10 @@ export default function PicketList({
                                                 {employee.supervisor}
                                             </Table.TableCell>
                                             <Table.TableCell rowSpan={2}>
+                                                {dateFormatter.longWeekdayFormat.format(
+                                                    employee.schedule
+                                                )}{" "}
+                                                /{" "}
                                                 {dateFormatter.longFullFormat.format(
                                                     employee.schedule
                                                 )}
@@ -116,6 +131,18 @@ export default function PicketList({
                                                         "flex items-center justify-center"
                                                     )}
                                                 >
+                                                    <Button
+                                                        onClick={() =>
+                                                            onDeletePicket &&
+                                                            onDeletePicket(
+                                                                pickets?.id || "",
+                                                                employee
+                                                            )
+                                                        }
+                                                        className="h-8 aspect-square w-fit"
+                                                    >
+                                                        <Trash className="shrink-0 size-4 text-white" />
+                                                    </Button>
                                                     <Button
                                                         onClick={() =>
                                                             onSwapEmployee &&

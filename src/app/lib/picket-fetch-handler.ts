@@ -16,7 +16,8 @@ import { type EmployeeDataProps } from "@/app/props/picket"
 
 export const handleGetTodayPicket = async (
     onSuccess: (message: string, data: EmployeePicketProps | null) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/employee/picket/today",
@@ -24,6 +25,7 @@ export const handleGetTodayPicket = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = TodatPicketGetResponse.parse(res)
@@ -34,11 +36,37 @@ export const handleGetTodayPicket = async (
     )
 }
 
+export const handleDeleteTargetPicket = async (
+    id: string,
+    picketId: string,
+    onSuccess: (message: string) => void,
+    onError: (message: string) => void,
+    signal?: AbortSignal
+) => {
+    await fetchData(
+        `/api/employee/picket?id=${id}&picketId=${picketId}`,
+        {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            signal,
+        },
+        (res) => {
+            const data = BasicAPIResponse.parse(res)
+
+            if (data.success) onSuccess(data.message)
+            else onError(data.message)
+        }
+    )
+}
+
 export const handleSendNotification = async (
     data: EmployeePicketDataProps,
     date: Date,
     onSuccess: (message: string) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/employee/notif",
@@ -51,6 +79,7 @@ export const handleSendNotification = async (
                 data,
                 date,
             }),
+            signal,
         },
         (res) => {
             const data = BasicAPIResponse.parse(res)
@@ -63,7 +92,8 @@ export const handleSendNotification = async (
 
 export const handleGetPicketData = async (
     onSuccess: (message: string, data: PicketProps) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/employee/picket",
@@ -71,6 +101,7 @@ export const handleGetPicketData = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = PicketGetResponse.parse(res)
@@ -84,7 +115,8 @@ export const handleGetPicketData = async (
 
 export const handleGeneratePicketData = async (
     onSuccess: (message: string) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/employee/picket",
@@ -93,6 +125,7 @@ export const handleGeneratePicketData = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = BasicAPIResponse.parse(res)
@@ -107,7 +140,8 @@ export const handleSwapPicketData = async (
     id: string,
     picket: EmployeePicketProps,
     onSuccess: (message: string) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         `/api/employee/picket?id=${id}`,
@@ -117,6 +151,7 @@ export const handleSwapPicketData = async (
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(picket),
+            signal,
         },
         (res) => {
             const data = BasicAPIResponse.parse(res)
@@ -129,7 +164,8 @@ export const handleSwapPicketData = async (
 
 export const handleGetEmployeeData = async (
     onSuccess: (message: string, data: EmployeeBasicProps[]) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/employee",
@@ -137,6 +173,7 @@ export const handleGetEmployeeData = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = EmployeeGetResponse.parse(res)
@@ -151,7 +188,8 @@ export const handleGetEmployeeData = async (
 export const handleEditEmployee = async (
     data: EmployeeDataProps,
     onSuccess: (message: string) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/employee",
@@ -161,6 +199,7 @@ export const handleEditEmployee = async (
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            signal,
         },
         (res) => {
             const data = BasicAPIResponse.parse(res)
@@ -174,7 +213,8 @@ export const handleEditEmployee = async (
 export const handleAddNewEmployee = async (
     data: EmployeeDataProps,
     onSuccess: (message: string) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         "/api/employee",
@@ -184,6 +224,7 @@ export const handleAddNewEmployee = async (
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            signal,
         },
         (res) => {
             const data = BasicAPIResponse.parse(res)
@@ -197,7 +238,8 @@ export const handleAddNewEmployee = async (
 export const handleDeleteEmployee = async (
     id: string,
     onSuccess: (message: string) => void,
-    onError: (message: string) => void
+    onError: (message: string) => void,
+    signal?: AbortSignal
 ) => {
     await fetchData(
         `/api/employee?id=${id}`,
@@ -206,6 +248,7 @@ export const handleDeleteEmployee = async (
             headers: {
                 "Content-Type": "application/json",
             },
+            signal,
         },
         (res) => {
             const data = BasicAPIResponse.parse(res)

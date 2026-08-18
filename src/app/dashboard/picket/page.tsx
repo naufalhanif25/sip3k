@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import { cn, generatePageInfo } from "@/app/lib/global-utils"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Dashboard from "@/app/components/dashboard/dashboard"
 import variables from "@/app/data/variables.json"
 import {
@@ -77,14 +77,31 @@ export default function Picket() {
             )
         } else handleSetAddPopupState()
     }
+    const getEmployeeData = useCallback(
+        (signal?: AbortSignal) => {
+            PicketHandler.handleGetEmployeeData(
+                (_, resData) => setEmployees(resData),
+                (message) => showNotification("Gagal Mengambil Data Pegawai", message, "error"),
+                signal
+            )
+        },
+        [showNotification]
+    )
+    const getPicketData = useCallback(
+        (signal?: AbortSignal) => {
+            PicketHandler.handleGetPicketData(
+                (_, resData) => setPickets(resData),
+                (message) => showNotification("Gagal Mengambil Jadwal Piket", message, "error"),
+                signal
+            )
+        },
+        [showNotification]
+    )
     const handleSubmitEditEmployee = (data: EmployeeDataProps) => {
         PicketHandler.handleEditEmployee(
             data,
             () => {
-                PicketHandler.handleGetEmployeeData(
-                    (_, resData) => setEmployees(resData),
-                    (message) => showNotification("Gagal Menyimpan Pegawai", message, "error")
-                )
+                getEmployeeData()
                 showNotification(
                     "Data Pegawai Berhasil Diperbarui",
                     `Data pegawai atas nama ${data.name} berhasil diperbarui.`,
@@ -99,10 +116,7 @@ export default function Picket() {
         PicketHandler.handleAddNewEmployee(
             data,
             () => {
-                PicketHandler.handleGetEmployeeData(
-                    (_, resData) => setEmployees(resData),
-                    (message) => showNotification("Gagal Menyimpan Pegawai", message, "error")
-                )
+                getEmployeeData()
                 showNotification(
                     "Pegawai Berhasil Didaftarkan",
                     `Pegawai atas nama ${data.name} berhasil didaftarkan.`,
@@ -124,11 +138,7 @@ export default function Picket() {
                 PicketHandler.handleDeleteEmployee(
                     data.employeeId,
                     () => {
-                        PicketHandler.handleGetEmployeeData(
-                            (_, resData) => setEmployees(resData),
-                            (message) =>
-                                showNotification("Gagal Mengambil Data Pegawai", message, "error")
-                        )
+                        getEmployeeData()
                         showNotification(
                             "Pegawai Berhasil Dihapus",
                             `Pegawai dengan nama ${data.name} berhasil di hapus.`,
@@ -150,11 +160,7 @@ export default function Picket() {
             () =>
                 PicketHandler.handleGeneratePicketData(
                     () => {
-                        PicketHandler.handleGetPicketData(
-                            (_, resData) => setPickets(resData),
-                            (message) =>
-                                showNotification("Gagal Mengambil Jadwal Piket", message, "error")
-                        )
+                        getPicketData()
                         showNotification(
                             "Generate Berhasil",
                             `Jadwal piket pegawai baru berhasil di-generate.`,
@@ -174,7 +180,7 @@ export default function Picket() {
         if (selectedPicket && JSON.stringify(data) !== JSON.stringify(selectedPicket)) {
             showInfoPopup(
                 "PERINGATAN",
-                "Apakah Anda yakin ingin membatalkan perubahan data piket?",
+                "Apakah Anda yakin ingin membatalkan perubahan jadwal piket?",
                 "Batal",
                 "Tutup",
                 () => setPopupState(),
@@ -186,10 +192,11 @@ export default function Picket() {
         } else setSelectedPicket(null)
     }
     const handleSaveSwapPicket = (data: EmployeePicketProps) => {
+        const currentWeekday = dateFormatter.longWeekdayFormat.format(data.schedule)
         const currentDate = dateFormatter.longFullFormat.format(data.schedule)
         showInfoPopup(
             "KONFIRMASI",
-            `Apakah Anda yakin ingin mengganti data pegawai piket untuk tanggal ${currentDate}?`,
+            `Apakah Anda yakin ingin mengganti data pegawai piket untuk tanggal ${currentWeekday} / ${currentDate}?`,
             "Batal",
             "Ganti",
             () => setPopupState(),
@@ -198,19 +205,15 @@ export default function Picket() {
                     pickets?.id || "",
                     data,
                     () => {
-                        PicketHandler.handleGetPicketData(
-                            (_, data) => setPickets(data),
-                            (message) =>
-                                showNotification("Gagal Mengambil Jadwal Piket", message, "error")
-                        )
+                        getPicketData()
                         showNotification(
-                            "Data Piket Berhasil Diperbarui",
-                            `Data piket untuk tanggal ${currentDate} berhasil diperbarui.`,
+                            "Jadwal Piket Berhasil Diperbarui",
+                            `Jadwal piket untuk tanggal ${currentWeekday} / ${currentDate} berhasil diperbarui.`,
                             "notification"
                         )
                         setSelectedPicket(null)
                     },
-                    (message) => showNotification("Gagal Menyimpan Data Piket", message, "error")
+                    (message) => showNotification("Gagal Menyimpan Jadwal Piket", message, "error")
                 )
                 setPopupState()
             }
@@ -225,33 +228,66 @@ export default function Picket() {
             (message) => showNotification("Gagal Mengirim Pemberitahuan", message, "error")
         )
     }
+    const handleDeletePicket = (id: string, data: EmployeePicketProps) => {
+        const currentWeekday = dateFormatter.longWeekdayFormat.format(data.schedule)
+        const currentDate = dateFormatter.longFullFormat.format(data.schedule)
+        showInfoPopup(
+            "KONFIRMASI",
+            `Apakah Anda yakin ingin menghapus jadwal piket pada tanggal ${currentWeekday} / ${currentDate}?`,
+            "Batal",
+            "Hapus",
+            () => setPopupState(),
+            () => {
+                PicketHandler.handleDeleteTargetPicket(
+                    id,
+                    data.id,
+                    () => {
+                        getPicketData()
+                        showNotification(
+                            "Jadwal Piket Berhasil Dihapus",
+                            `Jadwal piket untuk tanggal ${currentWeekday} / ${currentDate} berhasil dihapus.`,
+                            "notification"
+                        )
+                    },
+                    (message) => showNotification("Gagal Menghapus Jadwal Piket", message, "error")
+                )
+                setPopupState()
+            }
+        )
+    }
     const handleSavePicketSheet = async () => {
         const monthYear = dateFormatter.longFormat.format(pickets?.startAt)
-        await handleSavePicketToExcel(pickets, `Data Piket ${monthYear}.xlsx`, "Data Piket")
+        await handleSavePicketToExcel(
+            pickets,
+            `Data Jadwal Piket ${monthYear}.xlsx`,
+            "Data Jadwal Piket"
+        )
     }
     const handleSavePicketDocument = () => {
         const monthYear = dateFormatter.longFormat.format(pickets?.startAt)
         handleSavePicketToPdf(
             pickets,
-            `Data Piket Pegawai ${monthYear}`,
-            `Data Piket ${monthYear}.pdf`
+            "SUSUNAN JADWAL PETUGAS PIKET\n" +
+                `KEJAKSAAN NEGERI BANDA ACEH BULAN ${monthYear.toLocaleUpperCase()}`,
+            `Data Jadwal Piket ${monthYear}.pdf`
         )
     }
 
     useEffect(() => {
+        const controller = new AbortController()
+        const { signal } = controller
+
         PicketHandler.handleGetTodayPicket(
             (_, data) => setTodayPicket(data),
-            (message) => showNotification("Gagal Mengambil Data Piket", message, "error")
+            (message) => showNotification("Gagal Mengambil Jadwal Piket", message, "error"),
+            signal
         )
-        PicketHandler.handleGetEmployeeData(
-            (_, data) => setEmployees(data),
-            (message) => showNotification("Gagal Mengambil Data Pegawai", message, "error")
-        )
-        PicketHandler.handleGetPicketData(
-            (_, data) => setPickets(data),
-            (message) => showNotification("Gagal Mengambil Jadwal Piket", message, "error")
-        )
-    }, [showNotification])
+        getEmployeeData(signal)
+        getPicketData(signal)
+        return () => {
+            controller.abort()
+        }
+    }, [showNotification, getEmployeeData, getPicketData])
 
     return (
         <Dashboard
@@ -338,6 +374,7 @@ export default function Picket() {
                         pickets={pickets}
                         onGeneratePicket={handleGeneratePicket}
                         onSwapEmployee={handleOpenPicketSwapPopup}
+                        onDeletePicket={handleDeletePicket}
                         onSaveSheet={handleSavePicketSheet}
                         onPrintSheet={handleSavePicketDocument}
                     />
