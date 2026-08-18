@@ -16,8 +16,13 @@ export default function Pagination({
     return (
         <span className={cn(className, "gap-1 flex items-center justify-center")} {...props}>
             <Button
+                disabled={currentPage === 1}
                 onClick={() => onPrevPage && onPrevPage()}
-                className="h-7 aspect-square w-fit text-sm"
+                className={cn(
+                    "h-7 aspect-square w-fit text-sm",
+                    "disabled:pointer-events-none disabled:select-none",
+                    "disabled:bg-indigo-300"
+                )}
             >
                 <ChevronLeft className="size-4 shrink-0" />
             </Button>
@@ -32,8 +37,13 @@ export default function Pagination({
                 {currentPage}/{totalPages}
             </span>
             <Button
+                disabled={currentPage === totalPages}
                 onClick={() => onNextPage && onNextPage()}
-                className="h-7 aspect-square w-fit text-sm"
+                className={cn(
+                    "h-7 aspect-square w-fit text-sm",
+                    "disabled:pointer-events-none disabled:select-none",
+                    "disabled:bg-indigo-300"
+                )}
             >
                 <ChevronRight className="size-4 shrink-0" />
             </Button>
