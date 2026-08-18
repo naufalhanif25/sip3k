@@ -6,7 +6,7 @@ export function getWeekdays() {
     const baseDate = dateTZ.parseTZ("2024-01-07")
     const days = Array.from({ length: 7 }, (_, index) => {
         const date = baseDate.add(index, "day").toDate()
-        return dateFormatter.shortFormat.format(date)
+        return dateFormatter.shortWeekdayFormat.format(date)
     })
     return days
 }
