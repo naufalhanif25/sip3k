@@ -58,7 +58,7 @@ export default function MainSPTJB({
         <div className={className} {...props}>
             <div
                 className={cn(
-                    "w-full h-fit gap-4 rounded-lg p-4",
+                    "w-full h-fit gap-3 rounded-lg p-4",
                     "flex flex-col items-center justify-start",
                     "bg-indigo-100"
                 )}

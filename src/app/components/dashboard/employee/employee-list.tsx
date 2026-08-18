@@ -23,7 +23,7 @@ export default function EmployeeList({
         usePagination(filteredData)
 
     return (
-        <div className={cn(className, "flex flex-col items-center justify-start")} {...props}>
+        <div className={cn(className, "flex flex-col items-center justify-start", "gap-1")} {...props}>
             <TableTopHeader
                 className="w-full h-fit shrink-0 overflow-x-auto"
                 title="Daftar Pegawai"

@@ -361,7 +361,7 @@ export default function Picket() {
                 <div
                     className={cn(
                         "flex flex-col items-center justify-start",
-                        "w-full flex-1 overflow-y-auto gap-2"
+                        "w-full flex-1 overflow-y-auto gap-3"
                     )}
                 >
                     <TodayPicket

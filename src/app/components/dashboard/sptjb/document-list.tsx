@@ -23,20 +23,18 @@ export default function DocumentList({
 
     return (
         <div
-            className={cn(className, "flex flex-col items-start justify-start", "gap-2")}
+            className={cn(className, "flex flex-col items-start justify-start", "gap-1")}
             {...props}
         >
-            {data && data.length > 0 && (
-                <TableTopHeader
-                    className="w-full h-fit shrink-0 overflow-x-auto"
-                    title="Daftar Dokumen SPTJB"
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onSearch={setSearchInput}
-                    onPrevPage={handlePrevPage}
-                    onNextPage={handleNextPage}
-                ></TableTopHeader>
-            )}
+            <TableTopHeader
+                className="w-full h-fit shrink-0 overflow-x-auto"
+                title="Daftar Dokumen SPTJB"
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onSearch={setSearchInput}
+                onPrevPage={handlePrevPage}
+                onNextPage={handleNextPage}
+            ></TableTopHeader>
             {renderData && renderData.length > 0 ? (
                 <div
                     className={cn(
