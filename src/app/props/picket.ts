@@ -75,6 +75,7 @@ export interface EmployeeListProps extends HTMLAttributes<HTMLDivElement> {
 export interface PicketListProps extends HTMLAttributes<HTMLDivElement> {
     pickets: PicketProps | null
     onSwapEmployee?: (data: EmployeePicketProps) => void
+    onDeletePicket?: (id: string, data: EmployeePicketProps) => void
     onGeneratePicket?: () => void
     onPrintSheet?: () => void
     onSaveSheet?: () => void
