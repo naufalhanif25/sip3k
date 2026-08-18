@@ -61,3 +61,7 @@ new Cron("0 10 * * *", { timezone: DEFAULT_TIMEZONE }, async () => {
         await writeLog(err, "ERROR")
     }
 })
+
+const message = "Layanan Cron Piket berhasil diaktifkan."
+console.log(message)
+await writeLog(message, "INFO")
