@@ -134,10 +134,17 @@ export const NewSPTJB = forwardRef<HTMLDivElement, NewSPTJBProps>(function NewSP
     }, [formData, parentForm, data])
 
     useEffect(() => {
+        const controller = new AbortController()
+        const { signal } = controller
+
         handleGetTemplate(
             (resData) => setTemplateData(resData),
-            (message) => errorFallback("Gagal Mengambil Templat", message)
+            (message) => errorFallback("Gagal Mengambil Templat", message),
+            signal
         )
+        return () => {
+            controller.abort()
+        }
     }, [errorFallback])
 
     return (

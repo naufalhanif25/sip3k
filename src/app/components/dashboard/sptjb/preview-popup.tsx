@@ -28,10 +28,17 @@ export const PreviewPopup = forwardRef<HTMLDivElement, PreviewPopupProps>(functi
     }, [data, formData, templateData])
 
     useEffect(() => {
+        const controller = new AbortController()
+        const { signal } = controller
+
         handleGetTemplate(
             (data) => setTemplateData(data),
-            (message) => errorFallback("Gagal Mengambil Templat", message)
+            (message) => errorFallback("Gagal Mengambil Templat", message),
+            signal
         )
+        return () => {
+            controller.abort()
+        }
     }, [errorFallback])
 
     if (!formData || !metadata) return

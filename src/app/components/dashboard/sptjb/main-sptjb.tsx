@@ -41,10 +41,17 @@ export default function MainSPTJB({
     }
 
     useEffect(() => {
+        const controller = new AbortController()
+        const { signal } = controller
+
         handleGetDocumentData(
             (_, resData) => setDocuments(resData),
-            (message) => errorFallback("Gagal Mengambil Data Dokumen", message)
+            (message) => errorFallback("Gagal Mengambil Data Dokumen", message),
+            signal
         )
+        return () => {
+            controller.abort()
+        }
     }, [errorFallback])
 
     return (
