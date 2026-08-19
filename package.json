@@ -9,6 +9,7 @@
         "lint": "eslint",
         "cron": "bun run src/app/jobs/cron-picket.ts",
         "db:seed": "bun run data/seed.ts",
+        "env:set": "bun run data/set-env.ts",
         "logs:clean": "rm -rf logs/*"
     },
     "dependencies": {
