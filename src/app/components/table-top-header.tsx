@@ -6,6 +6,7 @@ import Pagination from "@/app/components/pagination"
 import { type TableTopHeaderProps } from "@/app/props/component"
 import TextInput from "@/app/components/text-input"
 import { useState } from "react"
+import { MAX_LIST_LENGTH } from "@/app/vars/global-vars"
 
 export default function TableTopHeader({
     title,
@@ -40,6 +41,7 @@ export default function TableTopHeader({
                         parentClassName="h-7 w-10 px-2 py-1"
                         type="text"
                         value={itemPerPage}
+                        placeholder={`${MAX_LIST_LENGTH}`}
                         onChange={(event) => {
                             const value = event.target.value
                             if (!value) {
