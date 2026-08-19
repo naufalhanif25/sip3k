@@ -1,39 +1,6 @@
-import { useState, useMemo, useRef, useEffect } from "react"
-import { MAX_LIST_LENGTH } from "@/app/vars/global-vars"
+import { useMemo, useRef, useEffect } from "react"
 import { Division } from "@/app/props/sptjb"
 import variables from "@/app/data/variables.json"
-
-export function usePagination<T>(
-    data?: T[] | null,
-    options?: {
-        pageSize?: number
-    }
-) {
-    const pageSize = options?.pageSize ?? MAX_LIST_LENGTH
-    const [currentPage, setCurrentPage] = useState<number>(1)
-    const totalPages = useMemo(() => {
-        if (!data || data.length === 0) return 1
-        return Math.ceil(data.length / pageSize)
-    }, [data, pageSize])
-    const renderData = useMemo(() => {
-        if (!data) return null
-        const startIndex = (currentPage - 1) * pageSize
-        return data.slice(startIndex, startIndex + pageSize)
-    }, [data, currentPage, pageSize])
-    const handlePrevPage = () => {
-        setCurrentPage((prev) => Math.max(prev - 1, 1))
-    }
-    const handleNextPage = () => {
-        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-    }
-    return {
-        currentPage,
-        totalPages,
-        renderData,
-        handlePrevPage,
-        handleNextPage,
-    }
-}
 
 export function useBudgetClass(
     division?: string | null,

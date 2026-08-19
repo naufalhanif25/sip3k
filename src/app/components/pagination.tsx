@@ -18,11 +18,7 @@ export default function Pagination({
             <Button
                 disabled={currentPage === 1}
                 onClick={() => onPrevPage && onPrevPage()}
-                className={cn(
-                    "h-7 aspect-square w-fit text-sm",
-                    "disabled:pointer-events-none disabled:select-none",
-                    "disabled:bg-indigo-300"
-                )}
+                className="h-7 aspect-square w-fit text-sm"
             >
                 <ChevronLeft className="size-4 shrink-0" />
             </Button>
@@ -39,11 +35,7 @@ export default function Pagination({
             <Button
                 disabled={currentPage === totalPages}
                 onClick={() => onNextPage && onNextPage()}
-                className={cn(
-                    "h-7 aspect-square w-fit text-sm",
-                    "disabled:pointer-events-none disabled:select-none",
-                    "disabled:bg-indigo-300"
-                )}
+                className="h-7 aspect-square w-fit text-sm"
             >
                 <ChevronRight className="size-4 shrink-0" />
             </Button>

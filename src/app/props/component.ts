@@ -114,4 +114,5 @@ export interface PaginationProps extends HTMLAttributes<HTMLDivElement> {
 export interface TableTopHeaderProps extends HTMLAttributes<HTMLDivElement>, PaginationProps {
     title: string
     onSearch?: (value: string) => void
+    onPageSizeChange?: (value?: number) => void
 }

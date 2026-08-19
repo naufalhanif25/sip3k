@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, ChangeEvent } from "react"
 import { EmployeeCategory, EmployeeData, type EmployeeDataProps } from "@/app/props/picket"
 import { type EmployeeBasicProps, type EmployeePicketDataProps } from "@/app/props/db"
+import { valueValidator } from "@/app/lib/global-utils"
 
 export const handleChangeName = (
     setter: Dispatch<SetStateAction<EmployeeDataProps>>,
@@ -46,9 +47,10 @@ export const handleChangeID = (
     setter: Dispatch<SetStateAction<EmployeeDataProps>>,
     event: ChangeEvent<HTMLInputElement, HTMLInputElement>
 ) => {
+    const value = event.target.value
     setter((prev) => ({
         ...prev,
-        employeeId: event.target.value,
+        employeeId: value ? (valueValidator.isValidNumber(value) ? value : prev.employeeId) : "",
     }))
 }
 
@@ -56,9 +58,10 @@ export const handleChangePhone = (
     setter: Dispatch<SetStateAction<EmployeeDataProps>>,
     event: ChangeEvent<HTMLInputElement, HTMLInputElement>
 ) => {
+    const value = event.target.value
     setter((prev) => ({
         ...prev,
-        phone: event.target.value,
+        phone: value ? (valueValidator.isValidPhone(value) ? value : prev.phone) : "",
     }))
 }
 
@@ -95,7 +98,7 @@ export const handleChangeIDValue = (
 ) => {
     setter((prev) => ({
         ...prev,
-        employeeId: id,
+        employeeId: id ? (valueValidator.isValidNumber(id) ? id : prev.employeeId) : "",
     }))
 }
 

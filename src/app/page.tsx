@@ -123,11 +123,7 @@ export default function Home() {
                 <Button
                     disabled={isLoggingIn}
                     onClick={handleLogin}
-                    className={cn(
-                        "px-3 py-1 max-w-32 w-full h-10",
-                        "disabled:pointer-events-none disabled:select-none",
-                        "disabled:bg-indigo-300"
-                    )}
+                    className="px-3 py-1 max-w-32 w-full h-10"
                 >
                     {isLoggingIn ? (
                         "Masuk..."

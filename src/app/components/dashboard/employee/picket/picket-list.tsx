@@ -2,9 +2,9 @@
 
 import TableTopHeader from "@/app/components/table-top-header"
 import * as Table from "@/app/components/table"
-import { usePagination } from "@/app/hooks/sptjb"
+import { usePagination } from "@/app/hooks/dashboard"
 import { cn } from "@/app/lib/global-utils"
-import { Fragment } from "react"
+import { Fragment, useState } from "react"
 import { MAX_ROW_PERPAGE } from "@/app/vars/global-vars"
 import { useSearch } from "@/app/hooks/component"
 import Button from "@/app/components/button"
@@ -27,11 +27,17 @@ export default function PicketList({
         const secondName = picket?.employees?.second?.name ?? ""
         return `${firstName} ${secondName}`
     })
-    const { currentPage, totalPages, renderData, handlePrevPage, handleNextPage } =
-        usePagination(filteredData)
+    const [maxPage, setMaxPage] = useState<number>()
+    const { currentPage, totalPages, renderData, handlePrevPage, handleNextPage } = usePagination(
+        filteredData,
+        { pageSize: maxPage }
+    )
 
     return (
-        <div className={cn(className, "flex flex-col items-center justify-start", "gap-1")} {...props}>
+        <div
+            className={cn(className, "flex flex-col items-center justify-start", "gap-1")}
+            {...props}
+        >
             <TableTopHeader
                 className="w-full h-fit shrink-0 overflow-x-auto"
                 title="Jadwal Piket Terkini"
@@ -40,6 +46,7 @@ export default function PicketList({
                 onSearch={setSearchInput}
                 onPrevPage={handlePrevPage}
                 onNextPage={handleNextPage}
+                onPageSizeChange={(value) => setMaxPage(value)}
             >
                 <Button
                     onClick={() => onGeneratePicket && onGeneratePicket()}
@@ -55,31 +62,28 @@ export default function PicketList({
                     )}
                 >
                     <Button
-                        disabled={Boolean(!pickets)}
+                        disabled={!pickets}
                         onClick={() => pickets && onPrintSheet && onPrintSheet()}
-                        className={cn(
-                            "h-7 aspect-square w-fit text-sm",
-                            "disabled:pointer-events-none disabled:select-none",
-                            "disabled:bg-indigo-300"
-                        )}
+                        className="h-7 aspect-square w-fit text-sm"
                     >
                         <FileText className="size-4 shrink-0" />
                     </Button>
                     <Button
-                        disabled={Boolean(!pickets)}
+                        disabled={!pickets}
                         onClick={() => pickets && onSaveSheet && onSaveSheet()}
-                        className={cn(
-                            "h-7 aspect-square w-fit text-sm",
-                            "disabled:pointer-events-none disabled:select-none",
-                            "disabled:bg-indigo-300"
-                        )}
+                        className="h-7 aspect-square w-fit text-sm"
                     >
                         <Sheet className="size-4 shrink-0" />
                     </Button>
                 </span>
             </TableTopHeader>
             {renderData && renderData.length > 0 ? (
-                <div className="w-full max-w-full h-fit overflow-x-auto">
+                <div
+                    className={cn(
+                        "w-full max-w-full h-fit max-h-140",
+                        "overflow-x-auto overflow-y-auto"
+                    )}
+                >
                     <Table.Table className="w-full max-w-full h-fit table-fixed">
                         <colgroup>
                             <col className="w-20" />
@@ -91,6 +95,7 @@ export default function PicketList({
                             <col className="w-50" />
                         </colgroup>
                         <Table.TableHeader
+                            className="sticky top-0 z-10 shadow-sm"
                             names={["No.", "Nama", "NIP", "Golongan", "Pengawas", "Jadwal", "Aksi"]}
                         />
                         <Table.TableBody>

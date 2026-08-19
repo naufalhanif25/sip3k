@@ -312,7 +312,7 @@ export default function Picket() {
                 </FloatingContainer>
             )}
             {showAddPopup && (
-                <FloatingContainer className="w-full h-full">
+                <FloatingContainer className="w-full h-full z-20">
                     <EmployeeAddPopup
                         className="max-w-100 w-full h-fit p-5 gap-4"
                         onCencel={handleCencelAddEmployee}
@@ -321,7 +321,7 @@ export default function Picket() {
                 </FloatingContainer>
             )}
             {selectedEmployee && (
-                <FloatingContainer className="w-full h-full">
+                <FloatingContainer className="w-full h-full z-20">
                     <EmployeeEditPopup
                         className="max-w-100 w-full h-fit p-5 gap-4"
                         data={selectedEmployee}
@@ -331,7 +331,7 @@ export default function Picket() {
                 </FloatingContainer>
             )}
             {selectedPicket && (
-                <FloatingContainer className="w-full h-full">
+                <FloatingContainer className="w-full h-full z-20">
                     <PicketSwapPopup
                         employees={employees}
                         className="max-w-100 w-full h-fit p-5 gap-4"

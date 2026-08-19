@@ -6,9 +6,10 @@ import { PenBox, Plus, Trash } from "lucide-react"
 import * as Table from "@/app/components/table"
 import { type EmployeeListProps } from "@/app/props/picket"
 import { MAX_ROW_PERPAGE } from "@/app/vars/global-vars"
-import { usePagination } from "@/app/hooks/sptjb"
+import { usePagination } from "@/app/hooks/dashboard"
 import { useSearch } from "@/app/hooks/component"
 import TableTopHeader from "@/app/components/table-top-header"
+import { useState } from "react"
 
 export default function EmployeeList({
     employees,
@@ -19,11 +20,17 @@ export default function EmployeeList({
     ...props
 }: EmployeeListProps) {
     const { setSearchInput, filteredData } = useSearch(employees, (employee) => employee.name)
-    const { currentPage, totalPages, renderData, handlePrevPage, handleNextPage } =
-        usePagination(filteredData)
+    const [maxPage, setMaxPage] = useState<number>()
+    const { currentPage, totalPages, renderData, handlePrevPage, handleNextPage } = usePagination(
+        filteredData,
+        { pageSize: maxPage }
+    )
 
     return (
-        <div className={cn(className, "flex flex-col items-center justify-start", "gap-1")} {...props}>
+        <div
+            className={cn(className, "flex flex-col items-center justify-start", "gap-1")}
+            {...props}
+        >
             <TableTopHeader
                 className="w-full h-fit shrink-0 overflow-x-auto"
                 title="Daftar Pegawai"
@@ -32,6 +39,7 @@ export default function EmployeeList({
                 onSearch={setSearchInput}
                 onPrevPage={handlePrevPage}
                 onNextPage={handleNextPage}
+                onPageSizeChange={(value) => setMaxPage(value)}
             >
                 <Button
                     onClick={() => onAddNewEmployee && onAddNewEmployee()}
@@ -41,7 +49,12 @@ export default function EmployeeList({
                 </Button>
             </TableTopHeader>
             {renderData && renderData.length > 0 ? (
-                <div className="w-full max-w-full h-fit overflow-x-auto">
+                <div
+                    className={cn(
+                        "w-full max-w-full h-fit max-h-140",
+                        "overflow-x-auto overflow-y-auto"
+                    )}
+                >
                     <Table.Table className="w-full max-w-full h-fit table-fixed">
                         <colgroup>
                             <col className="w-20" />
@@ -54,6 +67,7 @@ export default function EmployeeList({
                             <col className="w-50" />
                         </colgroup>
                         <Table.TableHeader
+                            className="sticky top-0 z-10 shadow-sm"
                             names={[
                                 "No.",
                                 "Nama",

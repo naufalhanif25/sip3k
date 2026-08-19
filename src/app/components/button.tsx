@@ -16,7 +16,9 @@ export default function Button({
                 "bg-indigo-400 hover:bg-indigo-500 text-white",
                 "transition ease-out duration-100",
                 "flex items-center justify-center gap-2",
-                "cursor-pointer shrink-0"
+                "cursor-pointer shrink-0",
+                "disabled:pointer-events-none disabled:select-none",
+                "disabled:bg-indigo-300"
             )}
             {...props}
         >

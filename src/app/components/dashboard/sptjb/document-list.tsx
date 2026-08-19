@@ -5,9 +5,10 @@ import Button from "@/app/components/button"
 import { Trash, PenBox, View } from "lucide-react"
 import * as Table from "@/app/components/table"
 import { type DocumentListProps } from "@/app/props/sptjb"
-import { usePagination } from "@/app/hooks/sptjb"
+import { usePagination } from "@/app/hooks/dashboard"
 import { useSearch } from "@/app/hooks/component"
 import TableTopHeader from "@/app/components/table-top-header"
+import { useState } from "react"
 
 export default function DocumentList({
     onOpenTrigger,
@@ -18,8 +19,11 @@ export default function DocumentList({
     ...props
 }: DocumentListProps) {
     const { setSearchInput, filteredData } = useSearch(data, (doc) => doc.name)
-    const { currentPage, totalPages, renderData, handlePrevPage, handleNextPage } =
-        usePagination(filteredData)
+    const [maxPage, setMaxPage] = useState<number>()
+    const { currentPage, totalPages, renderData, handlePrevPage, handleNextPage } = usePagination(
+        filteredData,
+        { pageSize: maxPage }
+    )
 
     return (
         <div
@@ -34,15 +38,17 @@ export default function DocumentList({
                 onSearch={setSearchInput}
                 onPrevPage={handlePrevPage}
                 onNextPage={handleNextPage}
+                onPageSizeChange={(value) => setMaxPage(value)}
             ></TableTopHeader>
             {renderData && renderData.length > 0 ? (
                 <div
                     className={cn(
-                        "w-full flex-1 overflow-x-auto",
-                        "flex flex-col items-start justify-start"
+                        "w-full max-w-full h-fit max-h-140 flex-1",
+                        "flex flex-col items-start justify-start",
+                        "overflow-x-auto overflow-y-auto"
                     )}
                 >
-                    <Table.Table className="w-full h-fit table-fixed">
+                    <Table.Table className="max-w-full w-full h-fit table-fixed">
                         <colgroup>
                             <col className="w-70" />
                             <col className="w-auto min-w-50" />
@@ -52,6 +58,7 @@ export default function DocumentList({
                             <col className="w-70" />
                         </colgroup>
                         <Table.TableHeader
+                            className="sticky top-0 z-10 shadow-sm"
                             names={[
                                 "No. Surat",
                                 "Nama",

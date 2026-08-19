@@ -169,11 +169,7 @@ export const NewSPTJB = forwardRef<HTMLDivElement, NewSPTJBProps>(function NewSP
                     <Button
                         disabled={!data.id}
                         onClick={() => onDelete && onDelete()}
-                        className={cn(
-                            "aspect-square h-8 w-fit text-sm",
-                            "disabled:pointer-events-none disabled:select-none",
-                            "disabled:bg-indigo-300"
-                        )}
+                        className="aspect-square h-8 w-fit text-sm"
                     >
                         <Trash className="size-4 shrink-0" />
                     </Button>

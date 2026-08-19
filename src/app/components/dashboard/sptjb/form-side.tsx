@@ -105,11 +105,7 @@ export default function FormSide({
                         <Button
                             disabled={formDataKey === 0}
                             onClick={() => onFormPrev && onFormPrev()}
-                            className={cn(
-                                "h-10 aspect-square text-sm",
-                                "disabled:pointer-events-none disabled:select-none",
-                                "disabled:bg-indigo-300"
-                            )}
+                            className="h-10 aspect-square text-sm"
                         >
                             <ChevronLeft className="size-4 shrink-0" />
                         </Button>

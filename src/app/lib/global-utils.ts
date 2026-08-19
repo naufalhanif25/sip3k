@@ -97,6 +97,12 @@ export const valueValidator = {
     isValidText: (value: string) => validator.isAlpha(value.trim(), "en-US", { ignore: " .,\t" }),
     isValidID: (value: string) => validator.isNumeric(value.trim(), { no_symbols: true }),
     isValidPhone: (value: string) => validator.isMobilePhone(value.trim(), "id-ID"),
+    isValidNumber: (value: string) => {
+        if (!validator.isNumeric(value)) return false
+        const sanitizedValue = value.replace(/^0+/, "")
+        if (!sanitizedValue) return false
+        return true
+    }
 }
 
 export const verifyJWT = async (token: string) => {
