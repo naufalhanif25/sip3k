@@ -1,6 +1,5 @@
-import path from "path"
 import * as z from "zod"
+import { LOG_TYPES } from "@/app/vars/db-vars"
 
-export const LogType = z.enum(["INFO", "WARN", "ERROR", "DEBUG"])
+export const LogType = z.enum(LOG_TYPES)
 export type LogLevel = z.infer<typeof LogType>
-export const LOGS_DIR = path.join(process.cwd(), "logs")

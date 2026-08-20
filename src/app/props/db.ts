@@ -1,16 +1,10 @@
 import { type FormInputProps, DivisionSchema, FormInput } from "@/app/props/sptjb"
 import * as z from "zod"
 import variables from "@/app/data/variables.json"
-import employees from "@/../data/employees.json"
 import { dateTZ } from "@/app/lib/date-timezone"
 
-export type Supervisor =
-    | "Kasubbagbin"
-    | "Kasi Intelijen"
-    | "Kasi Pidum"
-    | "Kasi Pidsus"
-    | "Kasi Datun"
-    | "Kasi PAPBB"
+export const SupervisorType = z.enum(variables.supervisor).default("Kasubbagbin")
+export type Supervisor = z.infer<typeof SupervisorType>
 
 export const EmployeeBasic = z.object({
     employeeId: z.string().default(""),
@@ -69,6 +63,7 @@ export const Picket = z.object({
     pickets: z.array(EmployeePicket).default([]),
     startAt: z.coerce.date().default(() => dateTZ.nowDate()),
     endAt: z.coerce.date().default(() => dateTZ.nowDate()),
+    generatedAt: z.coerce.date().default(() => dateTZ.nowDate()),
 })
 
 export type PicketProps = z.infer<typeof Picket>
@@ -101,23 +96,3 @@ export const DataBase = z.object({
 })
 
 export type DataBaseProps = z.infer<typeof DataBase>
-
-export const DEFAULT_DATA = DataBase.parse({
-    employees: employees.map((employee) =>
-        Employee.parse({
-            employeeId: employee.employeeid,
-            name: employee.name,
-            position: employee.position,
-            phone: employee.phone,
-            gender: employee.gender,
-            genderId: employee.genderid,
-            rank: employee.rank,
-            class: employee.class,
-            classId: employee.classid,
-            room: employee.room,
-            roomId: employee.roomid,
-        })
-    ),
-    pickets: [],
-    sptjb: [],
-})
