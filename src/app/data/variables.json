@@ -30,7 +30,7 @@
     },
     "supervisor": [
         "Kasubbagbin",
-        "Kasi Intel",
+        "Kasi Intelijen",
         "Kasi Pidum",
         "Kasi Pidsus",
         "Kasi Datun",
@@ -38,7 +38,7 @@
     ],
     "category": ["II/a", "II/b", "II/c", "II/d", "III/a", "III/b", "III/c", "III/d"],
     "sptjbcode": [""],
-    "paths": [
+    "routes": [
         {
             "name": "Dokumen SPTJB",
             "icon": "FileText",
@@ -58,5 +58,12 @@
         "P": 1
     },
     "class": ["I", "II", "III", "IV"],
-    "room": ["a", "b", "c", "d"]
+    "room": ["a", "b", "c", "d"],
+    "filepaths": {
+        "db": "./data/db.json",
+        "logs": "./logs",
+        "template": "./public/template.xlsx",
+        "notif": "./src/app/data/template/notif.md",
+        "backups": "./data/backups"
+    }
 }
