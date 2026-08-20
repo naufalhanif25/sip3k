@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { JSONFilePreset } from "lowdb/node"
-import { DataBase, DEFAULT_DATA, Employee } from "@/app/props/db"
+import { DataBase, Employee } from "@/app/props/db"
+import { DATABASE_PATH, DEFAULT_DATA } from "@/app/vars/db-vars"
 import { EmployeeClass, EmployeeGender } from "@/app/props/picket"
 import romans from "romans"
 import { cookies } from "next/headers"
@@ -11,6 +12,7 @@ import {
     SERVER_ERROR_RESPONSE,
     UNAUTHORIZED_RESPONSE,
 } from "@/app/vars/db-vars"
+import path from "path"
 
 export async function GET() {
     try {
@@ -21,7 +23,10 @@ export async function GET() {
         if (!isValidToken) {
             return UNAUTHORIZED_RESPONSE
         }
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(
+            path.resolve(process.cwd(), DATABASE_PATH),
+            DataBase.parse(DEFAULT_DATA)
+        )
         const data = DataBase.parse(db.data)
         const sortedEmployees = [...data.employees].sort((a, b) => a.name.localeCompare(b.name))
 
@@ -58,7 +63,10 @@ export async function DELETE(req: NextRequest) {
                 { status: 400 }
             )
         }
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(
+            path.resolve(process.cwd(), DATABASE_PATH),
+            DataBase.parse(DEFAULT_DATA)
+        )
         const data = DataBase.parse(db.data)
         const index = data.employees.findIndex((item) => item.employeeId === id)
 
@@ -121,7 +129,10 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             )
         }
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(
+            path.resolve(process.cwd(), DATABASE_PATH),
+            DataBase.parse(DEFAULT_DATA)
+        )
         const data = DataBase.parse(db.data)
         const isExist = data.employees.some((employee) => employee.employeeId === body.employeeId)
         const categoryParts = body.category.split("/")
@@ -193,7 +204,10 @@ export async function PUT(req: NextRequest) {
                 { status: 400 }
             )
         }
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(
+            path.resolve(process.cwd(), DATABASE_PATH),
+            DataBase.parse(DEFAULT_DATA)
+        )
         const data = DataBase.parse(db.data)
         const index = data.employees.findIndex((item) => item.employeeId === body.employeeId)
 

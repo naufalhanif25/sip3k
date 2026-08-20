@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server"
 import { JSONFilePreset } from "lowdb/node"
-import { DEFAULT_DATA, DataBase } from "@/app/props/db"
+import { DataBase } from "@/app/props/db"
+import { DATABASE_PATH, DEFAULT_DATA } from "@/app/vars/db-vars"
 import { matchDate } from "@/app/lib/global-utils"
 import { writeLog } from "@/app/lib/logs-utils"
 import { cookies } from "next/headers"
 import { verifyJWT } from "@/app/lib/global-utils"
 import { dateTZ } from "@/app/lib/date-timezone"
 import { SERVER_ERROR_RESPONSE, UNAUTHORIZED_RESPONSE } from "@/app/vars/db-vars"
+import path from "path"
 
 export async function GET() {
     try {
@@ -17,7 +19,10 @@ export async function GET() {
         if (!isValidToken) {
             return UNAUTHORIZED_RESPONSE
         }
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(
+            path.resolve(process.cwd(), DATABASE_PATH),
+            DataBase.parse(DEFAULT_DATA)
+        )
         const data = DataBase.parse(db.data)
         const now = dateTZ.nowDate()
         const targetPicket = data.pickets.find((value) =>
