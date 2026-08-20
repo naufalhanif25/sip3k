@@ -8,10 +8,14 @@ build
 .env
 .env*.local
 
-# git & logs
+# git
 .git
 .gitignore
+
+# logs, backups, & scripts
 logs/*.log
+data/backups/*
+scripts
 
 # project specific documentation / llm guidelines
 AGENTS.md
