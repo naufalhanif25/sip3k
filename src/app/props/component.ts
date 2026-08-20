@@ -34,7 +34,10 @@ export interface TableHeadProps extends HTMLAttributes<HTMLTableSectionElement> 
     names: string[]
 }
 
-export type NotificationType = "error" | "warning" | "notification"
+export const NOTIF_TYPE = ["error", "warning", "notification"]
+
+export const NotificationTypeSchema = z.enum(NOTIF_TYPE)
+export type NotificationType = z.infer<typeof NotificationTypeSchema>
 
 export interface NotificationProps extends HTMLAttributes<HTMLSpanElement> {
     title: string
@@ -54,7 +57,7 @@ export const NotificationState = z.object({
     show: z.boolean().default(false),
     title: z.string().default(""),
     description: z.string().default(""),
-    type: z.enum(["error", "warning", "notification"]).default("notification"),
+    type: NotificationTypeSchema.default(NOTIF_TYPE[0]),
 })
 
 export type InfoPopupProps = HTMLAttributes<HTMLDivElement> & InfoPopupDataProps

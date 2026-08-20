@@ -1,5 +1,4 @@
 import * as z from "zod"
-import path from "path"
 import { HTMLAttributes, ChangeEvent } from "react"
 import { type TemplateGetResponseProps } from "@/app/props/api"
 import { type ExcelCellProps } from "@/app/props/api"
@@ -7,8 +6,8 @@ import variables from "@/app/data/variables.json"
 import { type SPTJBProps } from "@/app/props/db"
 import { dateTZ } from "@/app/lib/date-timezone"
 
-export type Division = "Intel" | "Pembinaan" | "Pidum" | "Pidsus" | "PAPBB" | "Datun"
 export const DivisionSchema = z.enum(variables.divisions).nullable().default(null)
+export type Division = keyof typeof variables.budgetclass
 
 export const DocumentInit = z.object({
     id: z.string().nullable().default(null),
@@ -216,5 +215,3 @@ export interface PreviewPopupProps extends HTMLAttributes<HTMLDivElement> {
     onOpen?: () => void
     onPrint?: () => void
 }
-
-export const TEMPLATE_PATH = path.join(process.cwd(), "public", "template.xlsx")

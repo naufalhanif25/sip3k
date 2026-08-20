@@ -8,7 +8,7 @@ export default function Dashboard() {
     const router = useRouter()
 
     useEffect(() => {
-        router.replace(variables.paths[0].route)
+        router.replace(variables.routes[0].route)
     }, [router])
 
     return null

@@ -19,7 +19,7 @@ export async function proxy(req: NextRequest) {
     }
     if (isValidToken) {
         if (pathname === "/" || pathname === "/dashboard") {
-            return NextResponse.redirect(new URL(variables.paths[0].route, req.url))
+            return NextResponse.redirect(new URL(variables.routes[0].route, req.url))
         }
     }
     return NextResponse.next()

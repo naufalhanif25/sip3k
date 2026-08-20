@@ -35,7 +35,7 @@ import { dateFormatter } from "@/app/lib/global-utils"
 
 export default function Picket() {
     const path = usePathname()
-    const target = variables.paths.find((data) => data.route === path)
+    const target = variables.routes.find((data) => data.route === path)
     const subPageData = generatePageInfo(path, target)
     const [employees, setEmployees] = useState<EmployeeBasicProps[] | null>(null)
     const [pickets, setPickets] = useState<PicketProps | null>(null)

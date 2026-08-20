@@ -1,4 +1,5 @@
 import { DataBase, DEFAULT_DATA } from "@/app/props/db"
+import { DATABASE_PATH } from "@/app/vars/global-vars"
 import { JSONFilePreset } from "lowdb/node"
 import { NextRequest, NextResponse } from "next/server"
 import { generatePicketSchedule } from "@/app/lib/picket-db-handler"
@@ -11,6 +12,7 @@ import {
     SERVER_ERROR_RESPONSE,
     UNAUTHORIZED_RESPONSE,
 } from "@/app/vars/db-vars"
+import path from "path"
 
 export async function POST() {
     try {
@@ -21,7 +23,7 @@ export async function POST() {
         if (!isValidToken) {
             return UNAUTHORIZED_RESPONSE
         }
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
         const { existingBatchIndex, newPicket } = generatePicketSchedule(data, true)
         const newPicketBatch = newPicket!
@@ -51,7 +53,7 @@ export async function GET() {
         if (!isValidToken) {
             return UNAUTHORIZED_RESPONSE
         }
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
 
         if (!data.pickets || data.pickets.length === 0) {
@@ -111,7 +113,7 @@ export async function PUT(req: NextRequest) {
         if (!body || !body.id || !body.employees) {
             return INVALID_BODY_RESPONSE
         }
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
         const validEmployeeIds = new Set(data.employees.map((emp) => emp.employeeId))
         if (
@@ -183,7 +185,7 @@ export async function DELETE(req: NextRequest) {
                 { status: 400 }
             )
         }
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
         const groupIndex = data.pickets.findIndex((item) => item.id === id)
         if (groupIndex === -1) {

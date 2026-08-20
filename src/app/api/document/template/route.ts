@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server"
-import { TEMPLATE_PATH } from "@/app/props/sptjb"
+import { DATABASE_PATH, TEMPLATE_PATH } from "@/app/vars/global-vars"
 import { type ExcelCellProps, ExcelCell } from "@/app/props/api"
 import { JSONFilePreset } from "lowdb/node"
-import { DEFAULT_DATA, DataBase } from "@/app/props/db"
+import { DataBase, DEFAULT_DATA } from "@/app/props/db"
 import ExcelJS from "exceljs"
 import { getDocumentCode } from "@/app/lib/sptjb-utils-handler"
 import { cookies } from "next/headers"
 import { verifyJWT } from "@/app/lib/global-utils"
 import { writeLog } from "@/app/lib/logs-utils"
 import { SERVER_ERROR_RESPONSE, UNAUTHORIZED_RESPONSE } from "@/app/vars/db-vars"
+import path from "path"
 
 export async function GET() {
     try {
@@ -58,7 +59,7 @@ export async function GET() {
         const headerFooter = worksheet.headerFooter || {}
         const lastRow = rowsData[rowsData.length - 1]
         const lastCell = lastRow[lastRow.length - 1]
-        const db = await JSONFilePreset("data/db.json", DEFAULT_DATA)
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
 
         return NextResponse.json({

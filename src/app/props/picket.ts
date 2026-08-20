@@ -15,20 +15,13 @@ export interface PicketBoxProps extends HTMLAttributes<HTMLSpanElement> {
     onRemind?: () => void
 }
 
-export type EmployeeClass = "I" | "II" | "III" | "IV"
-export type EmployeeRoomID = "a" | "b" | "c" | "d"
-
-export type EmployeeCategory =
-    | "II/a"
-    | "II/b"
-    | "II/c"
-    | "II/d"
-    | "III/a"
-    | "III/b"
-    | "III/c"
-    | "III/d"
-
-export type EmployeeGender = "L" | "P"
+export const EmployeeClassType = z.enum(variables.class).default(variables.class[0])
+export type EmployeeClass = z.infer<typeof EmployeeClassType>
+export const EmployeeRoomIDType = z.enum(variables.room).default(variables.room[0])
+export type EmployeeRoomID = z.infer<typeof EmployeeRoomIDType>
+export const EmployeeCategoryType = z.enum(variables.category).default(variables.category[0])
+export type EmployeeCategory = z.infer<typeof EmployeeCategoryType>
+export type EmployeeGender = keyof typeof variables.gendermap
 
 export const EmployeeBasicData = z.object({
     category: z.enum(variables.category).nullable().default(null),

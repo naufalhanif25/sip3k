@@ -24,7 +24,7 @@ import FloatingContainer from "@/app/components/floating-container"
 export default function SPTJB() {
     const path = usePathname()
     const printRef = useRef<HTMLDivElement | null>(null)
-    const target = variables.paths.find((data) => data.route === path)
+    const target = variables.routes.find((data) => data.route === path)
     const subPageData = generatePageInfo(path, target)
     const [openEditor, setOpenEditor] = useState<boolean>(false)
     const [openViewPopup, setOpenViewPopup] = useState<boolean>(false)

@@ -1,0 +1,72 @@
+{
+    "header": [
+        "Lampiran Surat Perintah Kepala Kejaksaan Negeri Banda Aceh\n",
+        "Nomor   : Prin-\t/L.1.10/Cp.2/{month}/{year}\n",
+        "Tanggal : {date}\n"
+    ],
+    "footer": [
+        "Catatan :\n",
+        "\t1. Petugas piket wajib memberikan laporan kepada Kepala Kejaksaan Negeri Banda Aceh pada saat masuk kantor.\n",
+        "\t2. Pengawas Piket bertanggung jawab terhadap kehadiran Petugas Piket.\n",
+        "\t3. Tidak dibenarkan meninggalkan tugas piket tanpa izin Pengawas Piket.\n"
+    ],
+    "sign": [
+        "Banda Aceh, {date}\n",
+        "An. Kepala Kejaksaan Negeri Banda Aceh\n",
+        "Kepala Subbagian Pembinaan,\n\n\n\n",
+        "Afifuddin, S.H.\n",
+        "Sena Wira NIP. 197103031997031003\n"
+    ],
+    "excelheader": [
+        {
+            "header": "HARI/TANGGAL",
+            "key": "schedule",
+            "width": 30
+        },
+        {
+            "header": "PENGAWAS PIKET",
+            "key": "supervisor",
+            "width": 20
+        },
+        {
+            "header": "WIRA/KOMANDAN PIKET",
+            "key": "name1",
+            "width": 30
+        },
+        {
+            "header": "DARMA/ANGGOTA PIKET",
+            "key": "name2",
+            "width": 30
+        }
+    ],
+    "tabheader": [
+        ["HARI/TANGGAL", "PENGAWAS PIKET", "WIRA/KOMANDAN PIKET", "DARMA/ANGGOTA PIKET"],
+        ["1", "2", "3", "4"]
+    ],
+    "tabbody": [
+        {
+            "content": "{week} / {date}",
+            "styles": {
+                "valign": "middle", "halign": "left", "font": "times"
+            }
+        },
+        {
+            "content": "{supervisor}",
+            "styles": {
+                "valign": "middle", "halign": "center", "font": "times"
+            }
+        },
+        {
+            "content": "{name1}",
+            "styles": {
+                "valign": "middle", "halign": "center", "font": "times"
+            }
+        },
+        {
+            "content": "{name2}",
+            "styles": {
+                "valign": "middle", "halign": "center", "font": "times"
+            }
+        }
+    ]
+}
