@@ -69,3 +69,5 @@ export const TEMPLATE_BOUND = {
     column: 9,
     row: 36,
 }
+
+export const NOTIF_TYPE = ["error", "warning", "notification"]
