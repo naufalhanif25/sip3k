@@ -43,7 +43,7 @@ export default function Sidebar({
                 />
             </span>
             <span className={cn("flex flex-col overflow-y-auto", "w-full flex-1 px-2")}>
-                {variables.paths.map((button, index) => {
+                {variables.routes.map((button, index) => {
                     const SpecificComponent =
                         ComponentRegistry[button.icon as keyof typeof ComponentRegistry]
 
