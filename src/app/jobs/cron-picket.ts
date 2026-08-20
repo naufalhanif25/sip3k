@@ -5,8 +5,9 @@ import { generatePicketSchedule, sendDirectWAMessage } from "@/app/lib/picket-db
 import { writeLog } from "@/app/lib/logs-utils"
 import { matchDate } from "@/app/lib/global-utils"
 import { dateTZ } from "@/app/lib/date-timezone"
-import { DEFAULT_DATA, DATABASE_PATH } from "@/app/vars/db-vars"
-import { TIMEZONE } from "@/app/vars/db-vars"
+import { DATABASE_PATH } from "@/app/vars/global-vars"
+import { TIMEZONE } from "@/app/lib/date-timezone"
+import { DEFAULT_DATA } from "@/app/props/db"
 import path from "path"
 
 new Cron("0 8 * * *", { timezone: TIMEZONE }, async () => {
@@ -16,7 +17,7 @@ new Cron("0 8 * * *", { timezone: TIMEZONE }, async () => {
         try {
             const db = await JSONFilePreset(
                 path.resolve(process.cwd(), DATABASE_PATH),
-                DataBase.parse(DEFAULT_DATA)
+                DEFAULT_DATA
             )
             const data = DataBase.parse(db.data)
             const { existingBatchIndex, newPicket } = generatePicketSchedule(data)
@@ -40,10 +41,7 @@ new Cron("0 10 * * *", { timezone: TIMEZONE }, async () => {
     const tomorrow = dateTZ.now().add(1, "day").toDate()
 
     try {
-        const db = await JSONFilePreset(
-            path.resolve(process.cwd(), DATABASE_PATH),
-            DataBase.parse(DEFAULT_DATA)
-        )
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
         if (!data.pickets || data.pickets.length === 0) return
         const targetPicket = data.pickets.find((value) =>

@@ -8,9 +8,9 @@
         "start": "next start",
         "lint": "eslint",
         "cron": "bun run src/app/jobs/cron-picket.ts",
-        "db:seed": "bun run script/seed.ts",
+        "db:seed": "bun run scripts/seed.ts",
         "db:backup": "bun run src/app/jobs/cron-backup.ts",
-        "env:set": "bun run script/set-env.ts",
+        "env:set": "bun run scripts/set-env.ts",
         "clean:logs": "rm -rf logs/*",
         "clean:backups": "rm -rf data/backups/*"
     },

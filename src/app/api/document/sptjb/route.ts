@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server"
 import { JSONFilePreset } from "lowdb/node"
-import { SPTJBDetail } from "@/app/props/db"
-import { DATABASE_PATH, DEFAULT_DATA } from "@/app/vars/db-vars"
+import { DEFAULT_DATA, SPTJBDetail } from "@/app/props/db"
+import { DATABASE_PATH } from "@/app/vars/global-vars"
 import { DataBase } from "@/app/props/db"
 import { Division, FormInputProps } from "@/app/props/sptjb"
 import { verifyJWT } from "@/app/lib/global-utils"
@@ -34,10 +34,7 @@ export async function POST(req: NextRequest) {
         const _class = body._class as string
         const docId = body.docId as string
         const formData = body.data as FormInputProps[]
-        const db = await JSONFilePreset(
-            path.resolve(process.cwd(), DATABASE_PATH),
-            DataBase.parse(DEFAULT_DATA)
-        )
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
         const documentId = crypto.randomUUID()
         const newData = SPTJBDetail.parse({
@@ -76,10 +73,7 @@ export async function GET(req: NextRequest) {
         }
         const { searchParams } = new URL(req.url)
         const id = searchParams.get("id")
-        const db = await JSONFilePreset(
-            path.resolve(process.cwd(), DATABASE_PATH),
-            DataBase.parse(DEFAULT_DATA)
-        )
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
 
         if (id) {
@@ -144,10 +138,7 @@ export async function PUT(req: NextRequest) {
         const division = body.division as Division
         const _class = body._class as string
         const formData = body.data as FormInputProps[]
-        const db = await JSONFilePreset(
-            path.resolve(process.cwd(), DATABASE_PATH),
-            DataBase.parse(DEFAULT_DATA)
-        )
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
         const index = data.sptjb.findIndex((item) => item.id === id)
 
@@ -205,10 +196,7 @@ export async function DELETE(req: NextRequest) {
                 { status: 400 }
             )
         }
-        const db = await JSONFilePreset(
-            path.resolve(process.cwd(), DATABASE_PATH),
-            DataBase.parse(DEFAULT_DATA)
-        )
+        const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
         const index = data.sptjb.findIndex((item) => item.id === id)
 

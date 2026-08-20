@@ -3,7 +3,8 @@ import { twMerge } from "tailwind-merge"
 import { DashboardSubPage, type PageRouteProps } from "@/app/props/dashboard"
 import { jwtVerify } from "jose"
 import validator from "validator"
-import { LOCALE } from "@/app/vars/db-vars"
+
+export const LOCALE = "id-ID"
 
 export function cn(...classNames: ClassValue[]): string {
     return twMerge(clsx(classNames))

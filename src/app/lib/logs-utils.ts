@@ -2,7 +2,7 @@ import fs from "fs/promises"
 import path from "path"
 import { dateTZ } from "@/app/lib/date-timezone"
 import { LogLevel } from "@/app/props/logs"
-import { LOGS_DIR } from "@/app/vars/db-vars"
+import { LOGS_DIR } from "@/app/vars/global-vars"
 
 export const writeLog = async (message: unknown, level: LogLevel = "INFO") => {
     let strMessage = String(message)

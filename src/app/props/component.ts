@@ -1,7 +1,6 @@
 import { FileText, ClipboardClock } from "lucide-react"
 import { HTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes } from "react"
 import { dateTZ } from "@/app/lib/date-timezone"
-import { NOTIF_TYPE } from "@/app/vars/global-vars"
 import * as z from "zod"
 
 export interface CheckBoxProps extends HTMLAttributes<HTMLSpanElement> {
@@ -35,7 +34,9 @@ export interface TableHeadProps extends HTMLAttributes<HTMLTableSectionElement> 
     names: string[]
 }
 
-export const NotificationTypeSchema = z.enum(NOTIF_TYPE).default(NOTIF_TYPE[0])
+export const NOTIF_TYPE = ["error", "warning", "notification"]
+
+export const NotificationTypeSchema = z.enum(NOTIF_TYPE)
 export type NotificationType = z.infer<typeof NotificationTypeSchema>
 
 export interface NotificationProps extends HTMLAttributes<HTMLSpanElement> {
@@ -56,7 +57,7 @@ export const NotificationState = z.object({
     show: z.boolean().default(false),
     title: z.string().default(""),
     description: z.string().default(""),
-    type: NotificationTypeSchema,
+    type: NotificationTypeSchema.default(NOTIF_TYPE[0]),
 })
 
 export type InfoPopupProps = HTMLAttributes<HTMLDivElement> & InfoPopupDataProps

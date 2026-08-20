@@ -1,5 +1,6 @@
 import { type FormInputProps, DivisionSchema, FormInput } from "@/app/props/sptjb"
 import * as z from "zod"
+import employees from "@/../data/employees.json"
 import variables from "@/app/data/variables.json"
 import { dateTZ } from "@/app/lib/date-timezone"
 
@@ -96,3 +97,23 @@ export const DataBase = z.object({
 })
 
 export type DataBaseProps = z.infer<typeof DataBase>
+
+export const DEFAULT_DATA = DataBase.parse({
+    employees: employees.map((employee) =>
+        Employee.parse({
+            employeeId: employee.employeeid,
+            name: employee.name,
+            position: employee.position,
+            phone: employee.phone,
+            gender: employee.gender,
+            genderId: employee.genderid,
+            rank: employee.rank,
+            class: employee.class,
+            classId: employee.classid,
+            room: employee.room,
+            roomId: employee.roomid,
+        })
+    ),
+    pickets: [],
+    sptjb: [],
+})

@@ -4,6 +4,7 @@ import { EmployeeData } from "@/app/props/picket"
 import { UserData } from "@/app/props/api"
 import { UserLogin } from "@/app/props/user"
 import { dateTZ } from "@/app/lib/date-timezone"
+import variables from "@/app/data/variables.json"
 
 export const DOC_DATA_DEFAULT = DocumentInit.parse({
     id: null,
@@ -64,10 +65,15 @@ export const FORM_INPUT_DEFAULT = FormInput.parse({
 
 export const MAX_ROW_PERPAGE = 10
 export const MAX_LIST_LENGTH = 10
+export const MAX_BACKUP_FILES = 30
 
 export const TEMPLATE_BOUND = {
     column: 9,
     row: 36,
 }
 
-export const NOTIF_TYPE = ["error", "warning", "notification"]
+export const LOGS_DIR = variables.filepaths.logs
+export const DATABASE_PATH = variables.filepaths.db
+export const TEMPLATE_PATH = variables.filepaths.template
+export const NOTIF_TEMPLATE_PATH = variables.filepaths.notif
+export const BACKUP_PATH = variables.filepaths.backups

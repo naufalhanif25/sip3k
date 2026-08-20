@@ -3,8 +3,8 @@ import fs from "fs/promises"
 import path from "path"
 import { writeLog } from "@/app/lib/logs-utils"
 import { dateTZ } from "@/app/lib/date-timezone"
-import { BACKUP_PATH, DATABASE_PATH, MAX_BACKUP_FILES } from "@/app/vars/db-vars"
-import { TIMEZONE } from "@/app/vars/db-vars"
+import { TIMEZONE } from "@/app/lib/date-timezone"
+import { BACKUP_PATH, DATABASE_PATH, MAX_BACKUP_FILES } from "@/app/vars/global-vars"
 
 new Cron("0 2 * * *", { timezone: TIMEZONE }, async () => {
     try {

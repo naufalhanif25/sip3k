@@ -12,7 +12,7 @@ import { EmployeeGender } from "@/app/props/picket"
 import { dateTZ } from "@/app/lib/date-timezone"
 import { isFemale, shuffleArray, isEligible } from "@/app/lib/picket-helper"
 import fs from "fs/promises"
-import { NOTIF_TEMPLATE_PATH } from "@/app/vars/db-vars"
+import { NOTIF_TEMPLATE_PATH } from "@/app/vars/global-vars"
 
 export function generatePicketSchedule(data: DataBaseProps, force: boolean = false) {
     const now = dateTZ.now()

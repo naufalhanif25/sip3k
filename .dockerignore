@@ -12,10 +12,9 @@ build
 .git
 .gitignore
 
-# logs, backups, & scripts
+# logs & backups
 logs/*.log
 data/backups/*
-scripts
 
 # project specific documentation / llm guidelines
 AGENTS.md
