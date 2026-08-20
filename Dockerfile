@@ -16,6 +16,8 @@ RUN bun build src/app/jobs/cron-picket.ts --outfile dist/cron.js --target bun
 RUN bun build src/app/jobs/cron-backup.ts --outfile dist/backup.js --target bun
 
 RUN bun build scripts/seed.ts --outfile dist/seed.js --target bun
+RUN bun build scripts/set-env.ts --outfile dist/set-env.js --target bun
+RUN bun build scripts/restore.ts --outfile dist/restore.js --target bun
 
 FROM oven/bun:1-alpine AS runner
 WORKDIR /app
