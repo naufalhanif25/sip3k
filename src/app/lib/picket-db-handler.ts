@@ -1,4 +1,4 @@
-import { dateFormatter } from "@/app/lib/global-utils"
+import { dateFormatter, formatConfig } from "@/app/lib/global-utils"
 import variables from "@/app/data/variables.json"
 import {
     type DataBaseProps,
@@ -11,9 +11,12 @@ import {
 import { EmployeeGender } from "@/app/props/picket"
 import { dateTZ } from "@/app/lib/date-timezone"
 import { isFemale, shuffleArray, isEligible } from "@/app/lib/picket-helper"
+import fs from "fs/promises"
+import { NOTIF_TEMPLATE_PATH } from "@/app/vars/db-vars"
 
 export function generatePicketSchedule(data: DataBaseProps, force: boolean = false) {
-    const nextMonth = dateTZ.now().add(1, "month")
+    const now = dateTZ.now()
+    const nextMonth = now.add(1, "month")
     const daysInMonth = nextMonth.daysInMonth()
     const startAt = nextMonth.startOf("month").toDate()
     const endAt = nextMonth.endOf("month").toDate()
@@ -127,16 +130,19 @@ export function generatePicketSchedule(data: DataBaseProps, force: boolean = fal
             pickets: dailyPickets,
             startAt,
             endAt,
+            generatedAt: now.toDate(),
         }),
     }
 }
 
 export async function sendDirectWAMessage(name: string, phone: string, date: Date) {
     const formattedDate = dateFormatter.longFullFormat.format(date)
-    const message =
-        `Halo *${name}*, Anda dijadwalkan untuk melaksanakan piket besok pada tanggal *${formattedDate}*. ` +
-        "Mohon untuk hadir tepat waktu dan melaksanakan tugas dengan baik ya!"
-
+    const notifConfig = {
+        name,
+        date: formattedDate
+    }
+    const notifTemplate = await fs.readFile(NOTIF_TEMPLATE_PATH, "utf-8")
+    const message = formatConfig(notifTemplate, notifConfig)
     const res = await fetch("https://api.fonnte.com/send", {
         method: "POST",
         headers: {

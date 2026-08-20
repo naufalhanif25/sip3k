@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge"
 import { DashboardSubPage, type PageRouteProps } from "@/app/props/dashboard"
 import { jwtVerify } from "jose"
 import validator from "validator"
+import { LOCALE } from "@/app/vars/db-vars"
 
 export function cn(...classNames: ClassValue[]): string {
     return twMerge(clsx(classNames))
@@ -66,43 +67,43 @@ export const matchDate = {
 }
 
 export const dateFormatter = {
-    longFullFormat: new Intl.DateTimeFormat("id-ID", {
+    longFullFormat: new Intl.DateTimeFormat(LOCALE, {
         day: "numeric",
         month: "long",
         year: "numeric",
     }),
-    shortFullFormat: new Intl.DateTimeFormat("id-ID", {
+    shortFullFormat: new Intl.DateTimeFormat(LOCALE, {
         day: "numeric",
         month: "short",
         year: "numeric",
     }),
-    longFormat: new Intl.DateTimeFormat("id-ID", {
+    longFormat: new Intl.DateTimeFormat(LOCALE, {
         month: "long",
         year: "numeric",
     }),
-    shortFormat: new Intl.DateTimeFormat("id-ID", {
+    shortFormat: new Intl.DateTimeFormat(LOCALE, {
         month: "short",
         year: "numeric",
     }),
-    longWeekdayFormat: new Intl.DateTimeFormat("id-ID", {
+    longWeekdayFormat: new Intl.DateTimeFormat(LOCALE, {
         weekday: "long",
     }),
-    shortWeekdayFormat: new Intl.DateTimeFormat("id-ID", {
+    shortWeekdayFormat: new Intl.DateTimeFormat(LOCALE, {
         weekday: "short",
     }),
-    defultFormat: new Intl.DateTimeFormat("id-ID"),
+    defultFormat: new Intl.DateTimeFormat(LOCALE),
 }
 
 export const valueValidator = {
     isValidText: (value: string) => validator.isAlpha(value.trim(), "en-US", { ignore: " .,\t" }),
     isValidID: (value: string) => validator.isNumeric(value.trim(), { no_symbols: true }),
-    isValidPhone: (value: string) => validator.isMobilePhone(value.trim(), "id-ID"),
+    isValidPhone: (value: string) => validator.isMobilePhone(value.trim(), LOCALE),
     isValidNumber: (value: string) => {
         if (!validator.isNumeric(value)) return false
         const sanitizedValue = value.replace(/^0+/, "")
         if (!sanitizedValue) return false
         return true
-    }
+    },
 }
 
 export const verifyJWT = async (token: string) => {
@@ -114,4 +115,12 @@ export const verifyJWT = async (token: string) => {
     } catch {
         return null
     }
+}
+
+export const formatConfig = (text: string, config: Record<string, string>) => {
+    let result = text
+    Object.entries(config).forEach(([key, value]) => {
+        result = result.replace(new RegExp(`\\{${key}\\}`, "g"), value)
+    })
+    return result
 }

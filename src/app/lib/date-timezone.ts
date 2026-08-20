@@ -2,15 +2,14 @@ import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import timezone from "dayjs/plugin/timezone"
 import isBetween from "dayjs/plugin/isBetween"
+import { TIMEZONE } from "@/app/vars/db-vars"
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.extend(isBetween)
 
-export const DEFAULT_TIMEZONE = "Asia/Jakarta"
-
 const now = () => {
-    return dayjs().tz(DEFAULT_TIMEZONE)
+    return dayjs().tz(TIMEZONE)
 }
 
 const nowDate = () => {
@@ -18,7 +17,7 @@ const nowDate = () => {
 }
 
 const parseTZ = (date?: string | Date | number) => {
-    return dayjs(date).tz(DEFAULT_TIMEZONE)
+    return dayjs(date).tz(TIMEZONE)
 }
 
 const getTZDate = (date?: string | Date | number): Date => {

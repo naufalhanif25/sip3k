@@ -1,7 +1,8 @@
-import fs from "node:fs/promises"
-import path from "node:path"
+import fs from "fs/promises"
+import path from "path"
 import { dateTZ } from "@/app/lib/date-timezone"
-import { LogLevel, LOGS_DIR } from "@/app/props/logs"
+import { LogLevel } from "@/app/props/logs"
+import { LOGS_DIR } from "@/app/vars/db-vars"
 
 export const writeLog = async (message: unknown, level: LogLevel = "INFO") => {
     let strMessage = String(message)
@@ -17,7 +18,7 @@ export const writeLog = async (message: unknown, level: LogLevel = "INFO") => {
         const now = dateTZ.now()
         const dateStr = now.format("YYYY-MM-DD")
         const timeStr = now.format("YYYY-MM-DD HH:mm:ss")
-        const filePath = path.join(LOGS_DIR, `${dateStr}.log`)
+        const filePath = path.join(path.resolve(process.cwd(), LOGS_DIR), `${dateStr}.log`)
         const logEntry = `[${timeStr}] [${level}] ${strMessage}\n`
 
         await fs.appendFile(filePath, logEntry, "utf-8")
