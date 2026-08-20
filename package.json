@@ -32,6 +32,7 @@
         "react-to-print": "^3.3.0",
         "romans": "^3.1.0",
         "tailwind-merge": "^3.6.0",
+        "uuid": "^14.0.2",
         "validator": "^13.15.35",
         "xlsx": "^0.18.5",
         "zod": "^4.4.3"

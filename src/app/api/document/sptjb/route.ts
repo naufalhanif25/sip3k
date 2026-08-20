@@ -13,6 +13,7 @@ import {
     SERVER_ERROR_RESPONSE,
     UNAUTHORIZED_RESPONSE,
 } from "@/app/vars/db-vars"
+import { v4 as uuidv4 } from "uuid"
 import path from "path"
 
 export async function POST(req: NextRequest) {
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
         const formData = body.data as FormInputProps[]
         const db = await JSONFilePreset(path.resolve(process.cwd(), DATABASE_PATH), DEFAULT_DATA)
         const data = DataBase.parse(db.data)
-        const documentId = crypto.randomUUID()
+        const documentId = uuidv4()
         const newData = SPTJBDetail.parse({
             id: documentId,
             name,

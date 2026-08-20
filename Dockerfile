@@ -22,6 +22,10 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV TZ=Asia/Jakarta
+
+ENV HOSTNAME="0.0.0.0"
+ENV PORT=3000
+
 ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY --from=builder /app/.next/standalone ./

@@ -12,6 +12,7 @@ import { EmployeeGender } from "@/app/props/picket"
 import { dateTZ } from "@/app/lib/date-timezone"
 import { isFemale, shuffleArray, isEligible } from "@/app/lib/picket-helper"
 import fs from "fs/promises"
+import { v4 as uuidv4 } from "uuid"
 import { NOTIF_TEMPLATE_PATH } from "@/app/vars/global-vars"
 
 export function generatePicketSchedule(data: DataBaseProps, force: boolean = false) {
@@ -96,7 +97,7 @@ export function generatePicketSchedule(data: DataBaseProps, force: boolean = fal
                 (monthPicketCount.get(selectedSecond.employeeId) || 0) + 1
             )
             const newPicketSchedule = EmployeePicket.parse({
-                id: crypto.randomUUID(),
+                id: uuidv4(),
                 employees: {
                     first: {
                         employeeId: selectedFirst.employeeId,
@@ -126,7 +127,7 @@ export function generatePicketSchedule(data: DataBaseProps, force: boolean = fal
     return {
         existingBatchIndex,
         newPicket: Picket.parse({
-            id: crypto.randomUUID(),
+            id: uuidv4(),
             pickets: dailyPickets,
             startAt,
             endAt,
