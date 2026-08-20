@@ -3,6 +3,7 @@ import * as z from "zod"
 import employees from "@/../data/employees.json"
 import variables from "@/app/data/variables.json"
 import { dateTZ } from "@/app/lib/date-timezone"
+import { v4 as uuidv4 } from "uuid"
 
 export const SupervisorType = z.enum(variables.supervisor).default("Kasubbagbin")
 export type Supervisor = z.infer<typeof SupervisorType>
@@ -51,7 +52,7 @@ export const TodayEmployeePicket = z.object({
 export type TodayEmployeePicketProps = z.infer<typeof TodayEmployeePicket>
 
 export const EmployeePicket = z.object({
-    id: z.string().default(crypto.randomUUID()),
+    id: z.string().default(uuidv4()),
     employees: TodayEmployeePicket,
     supervisor: z.enum(variables.supervisor).default("Kasubbagbin"),
     schedule: z.coerce.date().default(() => dateTZ.nowDate()),
@@ -60,7 +61,7 @@ export const EmployeePicket = z.object({
 export type EmployeePicketProps = z.infer<typeof EmployeePicket>
 
 export const Picket = z.object({
-    id: z.string().default(crypto.randomUUID()),
+    id: z.string().default(uuidv4()),
     pickets: z.array(EmployeePicket).default([]),
     startAt: z.coerce.date().default(() => dateTZ.nowDate()),
     endAt: z.coerce.date().default(() => dateTZ.nowDate()),
@@ -70,7 +71,7 @@ export const Picket = z.object({
 export type PicketProps = z.infer<typeof Picket>
 
 export const SPTJB = z.object({
-    id: z.string().default(crypto.randomUUID()),
+    id: z.string().default(uuidv4()),
     docId: z.string().default(""),
     name: z.string().default(""),
     division: DivisionSchema,

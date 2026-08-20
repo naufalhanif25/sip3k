@@ -1,5 +1,6 @@
 import { ValueType } from "exceljs"
 import { Employee, EmployeePicket, Picket, SPTJB, SPTJBDetail } from "@/app/props/db"
+import { v4 as uuidv4 } from "uuid"
 import * as z from "zod"
 
 export const ExcelCell = z.object({
@@ -108,7 +109,7 @@ export type DocumentGetOneResponseProps = z.infer<typeof DocumentGetOneResponse>
 export const DocumentPostResponse = z.object({
     ...BasicAPIResponse.shape,
     data: z.object({
-        id: z.string().default(crypto.randomUUID()),
+        id: z.string().default(uuidv4()),
     }),
 })
 
