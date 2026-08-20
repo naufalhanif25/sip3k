@@ -8,9 +8,11 @@
         "start": "next start",
         "lint": "eslint",
         "cron": "bun run src/app/jobs/cron-picket.ts",
-        "db:seed": "bun run data/seed.ts",
-        "env:set": "bun run data/set-env.ts",
-        "logs:clean": "rm -rf logs/*"
+        "db:seed": "bun run script/seed.ts",
+        "db:backup": "bun run src/app/jobs/cron-backup.ts",
+        "env:set": "bun run script/set-env.ts",
+        "clean:logs": "rm -rf logs/*",
+        "clean:backups": "rm -rf data/backups/*"
     },
     "dependencies": {
         "bcrypt-ts": "^9.0.1",
