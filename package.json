@@ -7,11 +7,22 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint",
-        "cron": "bun run src/app/jobs/cron-picket.ts",
-        "db:seed": "bun run scripts/seed.ts",
-        "db:restore": "bun run scripts/restore.ts",
-        "db:backup": "bun run src/app/jobs/cron-backup.ts",
-        "env:set": "bun run scripts/set-env.ts",
+        
+        "cron:dev": "bun run src/app/jobs/cron-picket.ts",
+        "cron:prod": "bun run dist/cron.js",
+        
+        "db:seed:dev": "bun run scripts/seed.ts",
+        "db:seed:prod": "bun run dist/seed.js",
+        
+        "db:restore:dev": "bun run scripts/restore.ts",
+        "db:restore:prod": "bun run dist/restore.js",
+        
+        "db:backup:dev": "bun run src/app/jobs/cron-backup.ts",
+        "db:backup:prod": "bun run dist/backup.js",     
+        
+        "env:set:dev": "bun run scripts/set-env.ts",
+        "env:set:prod": "bun run dist/set-env.js",
+        
         "clean:logs": "rm -rf logs/*",
         "clean:backups": "rm -rf data/backups/*"
     },
